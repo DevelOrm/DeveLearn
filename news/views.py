@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from datetime import datetime
 from .models import News
+from .serializers import NewsSerializer
 
 
 class NewsBotView(APIView):
@@ -31,3 +32,8 @@ class NewsBotView(APIView):
                 pass
 
         return Response({'message': 'JSON data received successfully'}, status=status.HTTP_201_CREATED)
+
+
+class NewsListView(generics.ListAPIView):
+    queryset = News.objects.all().order_by('-written_at')
+    serializer_class = NewsSerializer
