@@ -4,4 +4,5 @@ from . import views
 urlpatterns = [
     path('bot/', views.NewsBotView.as_view()),
     path('list/', views.NewsListView.as_view()),
+    path('search/', views.NewsSearchView.as_view()),
 ]

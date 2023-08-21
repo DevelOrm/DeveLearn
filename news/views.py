@@ -37,3 +37,16 @@ class NewsBotView(APIView):
 class NewsListView(generics.ListAPIView):
     queryset = News.objects.all().order_by('-written_at')
     serializer_class = NewsSerializer
+
+
+class NewsSearchView(generics.ListAPIView):
+    serializer_class = NewsSerializer
+
+    def get_queryset(self):
+        keyword = self.request.query_params.get('q')  # 브라우저에서 제공한 키워드
+        if keyword:
+            queryset = News.objects.filter(
+                title__icontains=keyword)  # 제목에 키워드를 포함하는 객체 검색
+        else:
+            queryset = News.objects.all()
+        return queryset
