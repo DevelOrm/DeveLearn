@@ -22,7 +22,7 @@ urlpatterns = [
     # 문제 게시판 목록 조회 및 문제 게시판 생성
     # path('test/', TestBoardView.as_view()),
     # 문제 게시판 삭제
-    # path('test/<int:pk>/', TestBoardView.as_view()),
+    # path('test/delete/<int:pk>/', TestBoardView.as_view()),
     # 문제 게시판 수정
     # path('test/update/<int:pk>/', TestBoardView.as_view()),
     # 문제 게시판 상세 조회
@@ -34,7 +34,7 @@ urlpatterns = [
     # 강의자료 게시판 목록 조회 및 강의자료 게시판 생성
     # path('lecturenote/', LectureNoteView.as_view()),
     # 강의자료 게시판 삭제
-    # path('lecturenote/<int:pk>/', LectureNoteView.as_view()),
+    # path('lecturenote/delete/<int:pk>/', LectureNoteView.as_view()),
     # 강의자료 게시판 수정
     # path('lecturenote/update/<int:pk>/', LectureNoteView.as_view()),
     # 강의자료 게시판 상세 조회
@@ -46,7 +46,7 @@ urlpatterns = [
     # 질문 게시판 목록 조회 및 질문 게시판 생성
     # path('question/', QuestionView.as_view()),
     # 질문 게시판 삭제
-    # path('question/<int:pk>/', QuestionView.as_view()),
+    # path('question/delete/<int:pk>/', QuestionView.as_view()),
     # 질문 게시판 수정
     # path('question/update/<int:pk>/', QuestionView.as_view()),
     # 질문 게시판 상세 조회
@@ -58,7 +58,7 @@ urlpatterns = [
     # 댓글 목록 조회 및 댓글 작성
     # path('comment/', CommentView.as_view()),
     # 댓글 삭제
-    # path('comment/<int:pk>/', CommentView.as_view()),
+    # path('comment/delete/<int:pk>/', CommentView.as_view()),
     # 댓글 수정
     # path('comment/update/<int:pk>/', CommentView.as_view()),
     # 댓글 상세 조회
