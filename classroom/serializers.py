@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Classroom, TestBoard, Test, LectureNoteBoard, LectureNote, QuestionBoard, Question, Comment, \
-    TestSubmit
+from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
+    Question, QuestionBoard, QuestionComment, TestSubmit
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -21,6 +21,12 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TestCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestComment
+        fields = '__all__'
+
+
 class LectureNoteBoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = LectureNoteBoard
@@ -30,6 +36,12 @@ class LectureNoteBoardSerializer(serializers.ModelSerializer):
 class LectureNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LectureNote
+        fields = '__all__'
+
+
+class LectureNoteCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LectureNoteComment
         fields = '__all__'
 
 
@@ -45,9 +57,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class QuestionCommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
+        model = QuestionComment
         fields = '__all__'
 
 

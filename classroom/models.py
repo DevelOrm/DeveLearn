@@ -83,16 +83,34 @@ class Question(models.Model):
         return f'{self.board} - {self.title} - self.user'
 
 
-class Comment(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, null=True, blank=True)
-    lecture_note = models.ForeignKey(LectureNote, on_delete=models.CASCADE, null=True, blank=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+class TestComment(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.test}{self.lecture_note}{self.question} - {self.content} - {self.user}'
+        return f'{self.test} - {self.content} - self.user'
+
+
+class LectureNoteComment(models.Model):
+    lecture_note = models.ForeignKey(LectureNote, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.lecture_note} - {self.content} - self.user'
+
+
+class QuestionComment(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.question} - {self.content} - self.user'
 
 
 class TestSubmit(models.Model):
