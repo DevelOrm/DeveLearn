@@ -1,9 +1,12 @@
 from django.urls import path
 from .views import ClassroomView, ClassroomDetailView, ClassroomTagView, TestBoardView, TestBoardDetailView, \
-    TestBoardByClassView, TestView, TestDetailView, TestByBoardView, LectureNoteBoardView, LectureNoteBoardDetailView, \
-    LectureNoteBoardByClassView, LectureNoteView, LectureNoteDetailView, LectureNoteByBoardView, QuestionBoardView, \
+    TestBoardByClassView, TestView, TestDetailView, TestByBoardView, TestCommentView, TestCommentDetailView, \
+    TestCommentByPostView, LectureNoteBoardView, LectureNoteBoardDetailView, \
+    LectureNoteBoardByClassView, LectureNoteView, LectureNoteDetailView, LectureNoteByBoardView, \
+    LectureNoteCommentView, LectureNoteCommentDetailView, LectureNoteCommentByPostView, QuestionBoardView, \
     QuestionBoardDetailView, QuestionBoardByClassView, QuestionView, QuestionDetailView, QuestionByBoardView, \
-    CommentView, CommentDetailView, CommentByBoardView, TestSubmitView, TestSubmitDetailView, TestSubmitByTestView
+    TestSubmitView, TestSubmitDetailView, TestSubmitByTestView, QuestionCommentView, QuestionCommentDetailView, \
+    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView
 
 app_name = 'classroom'
 
@@ -16,7 +19,9 @@ urlpatterns = [
     # 클래스 태그 조회
     path('tag/', ClassroomTagView.as_view()),
     # 교사별 클래스 조회
-    # path('<int:pk>/', ClassroomByTeacherView.as_view()),
+    path('<int:pk>/', ClassroomByTeacherView.as_view()),
+    # 특정 클래스의 모든 게시판 조회
+    path('board/', AllBoardByClassView.as_view()),
 
     ## 문제 게시판
     # 문제 게시판 목록 조회 및 문제 게시판 생성
@@ -34,6 +39,14 @@ urlpatterns = [
     # 게시판별 문제 게시글 조회
     path('test/post/<int:pk>/', TestByBoardView.as_view()),
 
+    ## 문제 게시글 댓글
+    # 문제 게시글 댓글 목록 조회 및 댓글 작성
+    path('test/comment/', TestCommentView.as_view()),
+    # 문제 게시글 댓글 상세 조회, 삭제
+    path('test/comment/detail/<int:pk>/', TestCommentDetailView.as_view()),
+    # 게시글별 댓글 조회
+    path('test/comment/<int:pk>/', TestCommentByPostView.as_view()),
+
     ## 강의자료 게시판
     # 강의자료 게시판 목록 조회 및 강의자료 게시판 생성
     path('lecturenote/', LectureNoteBoardView.as_view()),
@@ -50,6 +63,14 @@ urlpatterns = [
     # 게시판별 강의자료 게시글 조회
     path('lecturenote/post/<int:pk>/', LectureNoteByBoardView.as_view()),
 
+    ## 강의자료 게시글 댓글
+    # 강의자료 게시글 댓글 목록 조회 및 댓글 작성
+    path('lecturenote/comment/', LectureNoteCommentView.as_view()),
+    # 강의자료 게시글 댓글 상세 조회, 삭제
+    path('lecturenote/comment/detail/<int:pk>/', LectureNoteCommentDetailView.as_view()),
+    # 게시글별 댓글 조회
+    path('lecturenote/comment/<int:pk>/', LectureNoteCommentByPostView.as_view()),
+
     ## 질문 게시판
     # 질문 게시판 목록 조회 및 질문 게시판 생성
     path('question/', QuestionBoardView.as_view()),
@@ -60,19 +81,19 @@ urlpatterns = [
 
     ## 질문 게시글
     # 질문 게시글 목록 조회 및 질문 게시글 생성
-    path('question/', QuestionView.as_view()),
+    path('question/post/', QuestionView.as_view()),
     # 질문 게시글 상세 조회, 수정, 삭제
-    path('question/detail/<int:pk>/', QuestionDetailView.as_view()),
+    path('question/post/detail/<int:pk>/', QuestionDetailView.as_view()),
     # 게시판별 질문 게시판 조회
-    path('question/<int:pk>/', QuestionByBoardView.as_view()),
+    path('question/post/<int:pk>/', QuestionByBoardView.as_view()),
 
-    ## 댓글
-    # 댓글 목록 조회 및 댓글 작성
-    path('comment/', CommentView.as_view()),
-    # 댓글 상세 조회, 삭제
-    path('comment/detail/<int:pk>/', CommentDetailView.as_view()),
+    ## 질문 게시글 댓글
+    # 질문 게시글 댓글 목록 조회 및 댓글 작성
+    path('question/comment/', QuestionCommentView.as_view()),
+    # 질문 게시글 댓글 상세 조회, 삭제
+    path('question/comment/detail/<int:pk>/', QuestionCommentDetailView.as_view()),
     # 게시글별 댓글 조회
-    path('comment/<int:pk>/', CommentByBoardView.as_view()),
+    path('question/comment/<int:pk>/', QuestionCommentByPostView.as_view()),
 
     ## 문제 답변
     # 제출한 문제 답변 조회 및 문제 답변 제출

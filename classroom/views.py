@@ -1,11 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Classroom, Test, TestBoard, LectureNote, LectureNoteBoard, Question, QuestionBoard, Comment, \
-    TestSubmit
-from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerializer, LectureNoteSerializer, \
-    LectureNoteBoardSerializer, QuestionSerializer, QuestionBoardSerializer, CommentSerializer, \
-    TestSubmitSerializer
+from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
+    Question, QuestionBoard, QuestionComment, TestSubmit
+from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerializer, TestCommentSerializer, \
+    LectureNoteSerializer, LectureNoteBoardSerializer, LectureNoteCommentSerializer, QuestionSerializer, \
+    QuestionBoardSerializer, QuestionCommentSerializer, TestSubmitSerializer
 
 
 ### Classroom 클래스룸
@@ -46,12 +46,46 @@ class ClassroomDetailView(APIView):
 class ClassroomTagView(APIView):
     def get(self, request):
         queryset = Classroom.objects.all()
-        tag = request.GET.get('tag', '')
+        tag = request.GET.get('tag')
+        print(tag)
         if tag:
             queryset = queryset.filter(tag__icontains=tag)
 
         serializer = ClassroomSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ClassroomByTeacherView(APIView):
+    def get(self, request, pk):
+        queryset = Classroom.objects.filter(user=pk)
+        serializer = ClassroomSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AllBoardByClassView(APIView):
+    def get(self, request):
+        test_board_queryset = TestBoard.objects.all()
+        lecture_note_board_queryset = LectureNoteBoard.objects.all()
+        question_board_queryset = QuestionBoard.objects.all()
+
+        classroom = request.GET.get('classroom', '')
+
+        if classroom:
+            test_board_queryset = test_board_queryset.filter(classroom=classroom)
+            lecture_note_board_queryset = lecture_note_board_queryset.filter(classroom=classroom)
+            question_board_queryset = question_board_queryset.filter(classroom=classroom)
+
+        test_board_serializer = TestBoardSerializer(test_board_queryset, many=True)
+        lecture_note_board_serializer = LectureNoteBoardSerializer(lecture_note_board_queryset, many=True)
+        question_board_serializer = QuestionBoardSerializer(question_board_queryset, many=True)
+
+        context = {
+            "test_board": test_board_serializer.data,
+            "lecture_note_board": lecture_note_board_serializer.data,
+            "question_board": question_board_serializer.data
+        }
+
+        return Response(context)
 ### /Classroom 클래스룸
 
 
@@ -130,15 +164,58 @@ class TestDetailView(APIView):
     def delete(self, request, pk):
         queryset = Test.objects.get(pk=pk)
         queryset.delete()
-        return Response({'message': 'TestBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
 
 
 class TestByBoardView(APIView):
     def get(self, request, pk):
-        queryset = TestBoard.objects.filter(board=pk)
+        queryset = Test.objects.filter(board=pk)
         serializer = TestSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 ### /Test 문제게시글
+
+
+### TestComment 문제댓글
+class TestCommentView(APIView):
+    def get(self, request):
+        queryset = TestComment.objects.all()
+        serializer = TestCommentSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = TestCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            queryset = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TestCommentDetailView(APIView):
+    def get(self, request, pk):
+        queryset = TestComment.objects.get(pk=pk)
+        serializer = TestCommentSerializer(queryset)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        queryset = TestComment.objects.get(pk=pk)
+        serializer = TestCommentSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        queryset = TestComment.objects.get(pk=pk)
+        queryset.delete()
+        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+
+
+class TestCommentByPostView(APIView):
+    def get(self, request, pk):
+        queryset = TestComment.objects.filter(test=pk)
+        serializer = TestCommentSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+### /TestComment 문제댓글
 
 
 ### LectureNoteBoard 강의자료게시판
@@ -221,10 +298,53 @@ class LectureNoteDetailView(APIView):
 
 class LectureNoteByBoardView(APIView):
     def get(self, request, pk):
-        queryset = TestBoard.objects.filter(board=pk)
-        serializer = TestSerializer(queryset, many=True)
+        queryset = LectureNote.objects.filter(board=pk)
+        serializer = LectureNoteSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 ### /LectureNote 강의자료게시글
+
+
+### LectureNoteComment 강의자료댓글
+class LectureNoteCommentView(APIView):
+    def get(self, request):
+        queryset = LectureNoteComment.objects.all()
+        serializer = LectureNoteCommentSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = LectureNoteCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            queryset = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LectureNoteCommentDetailView(APIView):
+    def get(self, request, pk):
+        queryset = LectureNoteComment.objects.get(pk=pk)
+        serializer = LectureNoteCommentSerializer(queryset)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        queryset = LectureNoteComment.objects.get(pk=pk)
+        serializer = LectureNoteCommentSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        queryset = LectureNoteComment.objects.get(pk=pk)
+        queryset.delete()
+        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+
+
+class LectureNoteCommentByPostView(APIView):
+    def get(self, request, pk):
+        queryset = LectureNoteComment.objects.filter(lecture_note=pk)
+        serializer = LectureNoteCommentSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+### /LectureNoteComment 강의자료댓글
 
 
 ### QuestionBoard 질문게시판
@@ -307,51 +427,51 @@ class QuestionDetailView(APIView):
 
 class QuestionByBoardView(APIView):
     def get(self, request, pk):
-        queryset = Question.objects.filter(classroom=pk)
+        queryset = Question.objects.filter(board=pk)
         serializer = QuestionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 ### /Question 질문게시글
 
 
 ### Comment 댓글
-class CommentView(APIView):
+class QuestionCommentView(APIView):
     def get(self, request):
-        queryset = Comment.objects.all()
-        serializer = CommentSerializer(queryset, many=True)
+        queryset = QuestionComment.objects.all()
+        serializer = QuestionCommentSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = CommentSerializer(data=request.data)
+        serializer = QuestionCommentSerializer(data=request.data)
         if serializer.is_valid():
             queryset = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentDetailView(APIView):
+class QuestionCommentDetailView(APIView):
     def get(self, request, pk):
-        queryset = Comment.objects.get(pk=pk)
-        serializer = CommentSerializer(queryset)
+        queryset = QuestionComment.objects.get(pk=pk)
+        serializer = QuestionCommentSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, pk):
-        queryset = Comment.objects.get(pk=pk)
-        serializer = CommentSerializer(queryset, data=request.data)
+        queryset = QuestionComment.objects.get(pk=pk)
+        serializer = QuestionCommentSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        queryset = Comment.objects.get(pk=pk)
+        queryset = QuestionComment.objects.get(pk=pk)
         queryset.delete()
         return Response({'message': 'Comment deleted'}, status=status.HTTP_202_ACCEPTED)
 
 
-class CommentByBoardView(APIView):
+class QuestionCommentByPostView(APIView):
     def get(self, request, pk):
-        queryset = Comment.objects.filter(classroom=pk)
-        serializer = CommentSerializer(queryset, many=True)
+        queryset = QuestionComment.objects.filter(question=pk)
+        serializer = QuestionCommentSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 ### /Comment 댓글
 
