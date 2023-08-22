@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from rest_framework import status, generics
+from django.core.paginator import Paginator
 from rest_framework.views import APIView
+from rest_framework import status, generics
 from rest_framework.response import Response
-from datetime import datetime
 from .models import News
+from datetime import datetime
 from .serializers import NewsSerializer
 
 
@@ -49,4 +50,17 @@ class NewsSearchView(generics.ListAPIView):
                 title__icontains=keyword)  # 제목에 키워드를 포함하는 객체 검색
         else:
             queryset = News.objects.all()
-        return queryset
+        paginator = Paginator(queryset, 10)  # 10개씩 페이지 처리
+        page = self.request.query_params.get('page', 1)
+        results = paginator.get_page(page)
+        return results
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        response_data = {
+            'results': serializer.data,
+            'count': queryset.paginator.count,
+            'page_size': queryset.paginator.per_page
+        }
+        return Response(response_data)
