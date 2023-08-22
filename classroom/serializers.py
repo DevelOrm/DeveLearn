@@ -1,12 +1,17 @@
 from rest_framework import serializers
-from .models import Classroom, Test, LectureNote, Question, Comment, TestSubmit
+from .models import Classroom, TestBoard, Test, LectureNoteBoard, LectureNote, QuestionBoard, Question, Comment, \
+    TestSubmit
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
-    # tag = serializers.StringRelatedField(many=True)
-
     class Meta:
         model = Classroom
+        fields = '__all__'
+
+
+class TestBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestBoard
         fields = '__all__'
 
 
@@ -16,9 +21,21 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LectureNoteBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LectureNoteBoard
+        fields = '__all__'
+
+
 class LectureNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LectureNote
+        fields = '__all__'
+
+
+class QuestionBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionBoard
         fields = '__all__'
 
 
