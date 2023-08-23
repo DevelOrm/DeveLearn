@@ -6,7 +6,7 @@ from .views import ClassroomView, ClassroomDetailView, ClassroomTagView, TestBoa
     LectureNoteCommentView, LectureNoteCommentDetailView, LectureNoteCommentByPostView, QuestionBoardView, \
     QuestionBoardDetailView, QuestionBoardByClassView, QuestionView, QuestionDetailView, QuestionByBoardView, \
     TestSubmitView, TestSubmitDetailView, TestSubmitByTestView, QuestionCommentView, QuestionCommentDetailView, \
-    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView
+    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView, TestSubmitByTestUserView
 
 app_name = 'classroom'
 
@@ -102,4 +102,6 @@ urlpatterns = [
     path('testsubmit/detail/<int:pk>/', TestSubmitDetailView.as_view()),
     # 문제별 문제 답변 조회
     path('testsubmit/<int:pk>/', TestSubmitByTestView.as_view()),
+    # 문제+사용자별 답변 조회
+    path('testsubmit/<int:test_pk>/user/<int:user_pk>/', TestSubmitByTestUserView.as_view()),
 ]

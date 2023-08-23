@@ -786,4 +786,14 @@ class TestSubmitByTestView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TestSubmitByTestUserView(APIView):
+    def get(self, request, test_pk, user_pk):
+        try:
+            queryset = TestSubmit.objects.filter(test=test_pk, user=user_pk)
+            serializer = TestSubmitSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /TestSubmit 문제 답변
