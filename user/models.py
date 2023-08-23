@@ -6,14 +6,14 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    def create_user(self, user_id, password, user_name, email, phone_number, **extra_fields):
+    def create_user(self, user_id, password, nickname, email, phone_number, **extra_fields):
         if not email:
             raise ValueError("이메일이 없습니다.")
         
         user = self.model(
             user_id = user_id,
             email = self.normalize_email(email),
-            user_name = user_name,
+            nickname = nickname,
             phone_number = phone_number,
             **extra_fields
         )
@@ -21,11 +21,10 @@ class UserManager(BaseUserManager):
         user.save()
         return user
     
-    def create_superuser(self, user_id, password, user_name, email, **extra_fields):
+    def create_superuser(self, user_id, password, **extra_fields):
         user = self.model(
             user_id = user_id,
-            email = self.normalize_email(email),
-            user_name = user_name,
+            nickname = '관리자',
             **extra_fields
         )
         user.is_admin = True
@@ -36,8 +35,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     objects = UserManager()
     user_id = models.CharField(max_length=20, unique=True)
-    user_name = models.CharField(max_length=20)
-    email = models.EmailField(max_length=128, unique=True)
+    nickname = models.CharField(max_length=20)
+    email = models.EmailField(max_length=128)
     phone_number_regex = RegexValidator(regex=r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
     phone_number = models.CharField(validators=[phone_number_regex], max_length=11, blank=True)
     profile_image = models.ImageField(blank=True)
@@ -48,7 +47,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "user_id"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["user_name", "email"]
+    REQUIRED_FIELDS = []
     
     def __str__(self):
         return self.user_id

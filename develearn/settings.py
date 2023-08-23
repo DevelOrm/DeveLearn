@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 import environ
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,6 +54,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.naver',
     'allauth.socialaccount.providers.google',
+    # For JWT
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
 ]
 
 MIDDLEWARE = [
@@ -153,6 +158,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "user.User"
 
+SITE_ID = 1
+
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
@@ -160,8 +167,6 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
-SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     'kakao': {
@@ -195,13 +200,39 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "user_id" # 소셜 로그인 USERNAME 필드 설정
-ACCOUNT_AUTHENTICATION_METHOD = 'user_id' # 소셜 로그인 인증 설정
+#ACCOUNT_AUTHENTICATION_METHOD = 'user_id' # 소셜 로그인 인증 설정
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = None # 'none'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = False # Post 요청 필요, True 비권장
 
 # 로그인, 로그아웃 리다이렉트 - URL path name 작성
 LOGIN_REDIRECT_URL = 'main'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'main'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    )
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY': False, # Default True
+    'JWT_AUTH_COOKIE_USE_CSRF' : True,
+    'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
+    'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
+    'LOGOUT_ON_PASSWORD_CHANGE' : True,
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}

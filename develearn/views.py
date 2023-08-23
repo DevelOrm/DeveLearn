@@ -1,5 +1,4 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 def main(request):
-    return render(request, 'test.html')
+    return render(request, 'main.html')
