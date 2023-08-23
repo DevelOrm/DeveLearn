@@ -42,6 +42,12 @@ class NewsListView(generics.ListAPIView):
     pagination_class = PageNumberPagination
 
 
+class NewsRecentView(generics.ListAPIView):
+    queryset = News.objects.all().order_by('-written_at')[:6]
+    serializer_class = NewsSerializer
+    pagination_class = PageNumberPagination
+
+
 class NewsSearchView(generics.ListAPIView):
     serializer_class = NewsSerializer
 
