@@ -52,8 +52,8 @@ class LectureNote(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     content = models.TextField()
-    upload_file = models.FileField(upload_to='', null=True, blank=True)
-    upload_image = models.ImageField(upload_to='', null=True, blank=True)
+    upload_file = models.FileField(upload_to='lecturenote/file/', null=True, blank=True)
+    upload_image = models.ImageField(upload_to='lecturenote/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -76,7 +76,7 @@ class Question(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     content = models.TextField()
-    upload_image = models.ImageField(upload_to='', null=True, blank=True)
+    upload_image = models.ImageField(upload_to='question/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
