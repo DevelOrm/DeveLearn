@@ -9,6 +9,9 @@ class Classroom(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     tag = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'self.user - {self.class_name}'
 
@@ -19,6 +22,9 @@ class TestBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.classroom} - {self.title} - self.user'
@@ -32,6 +38,9 @@ class Test(models.Model):
     solution = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.board} - {self.title} - self.user'
 
@@ -42,6 +51,9 @@ class LectureNoteBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.classroom} - {self.title} - self.user'
@@ -56,6 +68,9 @@ class LectureNote(models.Model):
     upload_image = models.ImageField(upload_to='lecturenote/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.board} - {self.title} - self.user'
 
@@ -66,6 +81,9 @@ class QuestionBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.classroom} - {self.title} - self.user'
@@ -79,6 +97,9 @@ class Question(models.Model):
     upload_image = models.ImageField(upload_to='question/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.board} - {self.title} - self.user'
 
@@ -88,6 +109,9 @@ class TestComment(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.test} - {self.content} - self.user'
@@ -99,6 +123,9 @@ class LectureNoteComment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.lecture_note} - {self.content} - self.user'
 
@@ -109,6 +136,9 @@ class QuestionComment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.question} - {self.content} - self.user'
 
@@ -118,6 +148,9 @@ class TestSubmit(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.test} - self.user'
