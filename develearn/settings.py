@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     # Custom App
     'classroom',
     'news',
-    'user'
+    'user',
     # For allauth
     'django.contrib.sites',
     'allauth',
