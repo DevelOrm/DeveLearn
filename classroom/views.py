@@ -11,509 +11,779 @@ from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerialize
 ### Classroom 클래스룸
 class ClassroomView(APIView):
     def get(self, request):
-        queryset = Classroom.objects.all()
-        serializer = ClassroomSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Classroom.objects.all()
+            serializer = ClassroomSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = ClassroomSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = ClassroomSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ClassroomDetailView(APIView):
     def get(self, request, pk):
-        queryset = Classroom.objects.get(pk=pk)
-        serializer = ClassroomSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Classroom.objects.get(pk=pk)
+            serializer = ClassroomSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Classroom.DoesNotExist:
+            return Response({"error": "Classroom not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = Classroom.objects.get(pk=pk)
-        serializer = ClassroomSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = Classroom.objects.get(pk=pk)
+            serializer = ClassroomSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Classroom.DoesNotExist:
+            return Response({"error": "Classroom not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = Classroom.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Classroom deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = Classroom.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Classroom deleted'}, status=status.HTTP_202_ACCEPTED)
+        except Classroom.DoesNotExist:
+            return Response({"error": "Classroom not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ClassroomTagView(APIView):
     def get(self, request):
-        queryset = Classroom.objects.all()
-        tag = request.GET.get('tag')
-        print(tag)
-        if tag:
-            queryset = queryset.filter(tag__icontains=tag)
-
-        serializer = ClassroomSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Classroom.objects.all()
+            tag = request.GET.get('tag')
+            if tag:
+                queryset = queryset.filter(tag__icontains=tag)
+            serializer = ClassroomSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ClassroomByTeacherView(APIView):
     def get(self, request, pk):
-        queryset = Classroom.objects.filter(user=pk)
-        serializer = ClassroomSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Classroom.objects.filter(user=pk)
+            serializer = ClassroomSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AllBoardByClassView(APIView):
     def get(self, request):
-        test_board_queryset = TestBoard.objects.all()
-        lecture_note_board_queryset = LectureNoteBoard.objects.all()
-        question_board_queryset = QuestionBoard.objects.all()
+        try:
+            test_board_queryset = TestBoard.objects.all()
+            lecture_note_board_queryset = LectureNoteBoard.objects.all()
+            question_board_queryset = QuestionBoard.objects.all()
 
-        classroom = request.GET.get('classroom', '')
+            classroom = request.GET.get('classroom', '')
+            if classroom:
+                test_board_queryset = test_board_queryset.filter(classroom=classroom)
+                lecture_note_board_queryset = lecture_note_board_queryset.filter(classroom=classroom)
+                question_board_queryset = question_board_queryset.filter(classroom=classroom)
 
-        if classroom:
-            test_board_queryset = test_board_queryset.filter(classroom=classroom)
-            lecture_note_board_queryset = lecture_note_board_queryset.filter(classroom=classroom)
-            question_board_queryset = question_board_queryset.filter(classroom=classroom)
+            test_board_serializer = TestBoardSerializer(test_board_queryset, many=True)
+            lecture_note_board_serializer = LectureNoteBoardSerializer(lecture_note_board_queryset, many=True)
+            question_board_serializer = QuestionBoardSerializer(question_board_queryset, many=True)
 
-        test_board_serializer = TestBoardSerializer(test_board_queryset, many=True)
-        lecture_note_board_serializer = LectureNoteBoardSerializer(lecture_note_board_queryset, many=True)
-        question_board_serializer = QuestionBoardSerializer(question_board_queryset, many=True)
-
-        context = {
-            "test_board": test_board_serializer.data,
-            "lecture_note_board": lecture_note_board_serializer.data,
-            "question_board": question_board_serializer.data
-        }
-
-        return Response(context)
+            context = {
+                "test_board": test_board_serializer.data,
+                "lecture_note_board": lecture_note_board_serializer.data,
+                "question_board": question_board_serializer.data
+            }
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Classroom 클래스룸
 
 
 ### TestBoard 문제게시판
 class TestBoardView(APIView):
     def get(self, request):
-        queryset = TestBoard.objects.all()
-        serializer = TestBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestBoard.objects.all()
+            serializer = TestBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = TestBoardSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = TestBoardSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestBoardDetailView(APIView):
     def get(self, request, pk):
-        queryset = TestBoard.objects.get(pk=pk)
-        serializer = TestBoardSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestBoard.objects.get(pk=pk)
+            serializer = TestBoardSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except TestBoard.DoesNotExist:
+            return Response({"error": "TestBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = TestBoard.objects.get(pk=pk)
-        serializer = TestBoardSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = TestBoard.objects.get(pk=pk)
+            serializer = TestBoardSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except TestBoard.DoesNotExist:
+            return Response({"error": "TestBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = TestBoard.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'TestBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = TestBoard.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'TestBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        except TestBoard.DoesNotExist:
+            return Response({"error": "TestBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestBoardByClassView(APIView):
     def get(self, request, pk):
-        queryset = TestBoard.objects.filter(classroom=pk)
-        serializer = TestBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestBoard.objects.filter(classroom=pk)
+            serializer = TestBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /TestBoard 문제게시판
 
 
 ### Test 문제게시글
 class TestView(APIView):
     def get(self, request):
-        queryset = Test.objects.all()
-        serializer = TestSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Test.objects.all()
+            serializer = TestSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = TestSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = TestSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestDetailView(APIView):
     def get(self, request, pk):
-        queryset = Test.objects.get(pk=pk)
-        serializer = TestSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Test.objects.get(pk=pk)
+            serializer = TestSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = Test.objects.get(pk=pk)
-        serializer = TestSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = Test.objects.get(pk=pk)
+            serializer = TestSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = Test.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = Test.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestByBoardView(APIView):
     def get(self, request, pk):
-        queryset = Test.objects.filter(board=pk)
-        serializer = TestSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Test.objects.filter(board=pk)
+            serializer = TestSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Test 문제게시글
 
 
 ### TestComment 문제댓글
 class TestCommentView(APIView):
     def get(self, request):
-        queryset = TestComment.objects.all()
-        serializer = TestCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestComment.objects.all()
+            serializer = TestCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def post(self, request):
-        serializer = TestCommentSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = TestCommentSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestCommentDetailView(APIView):
     def get(self, request, pk):
-        queryset = TestComment.objects.get(pk=pk)
-        serializer = TestCommentSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestComment.objects.get(pk=pk)
+            serializer = TestCommentSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except TestComment.DoesNotExist:
+            return Response({"error": "TestComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = TestComment.objects.get(pk=pk)
-        serializer = TestCommentSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = TestComment.objects.get(pk=pk)
+            serializer = TestCommentSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except TestComment.DoesNotExist:
+            return Response({"error": "TestComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = TestComment.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = TestComment.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'TestComment deleted'}, status=status.HTTP_202_ACCEPTED)
+        except TestComment.DoesNotExist:
+            return Response({"error": "TestComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestCommentByPostView(APIView):
     def get(self, request, pk):
-        queryset = TestComment.objects.filter(test=pk)
-        serializer = TestCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestComment.objects.filter(test=pk)
+            serializer = TestCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /TestComment 문제댓글
 
 
 ### LectureNoteBoard 강의자료게시판
 class LectureNoteBoardView(APIView):
     def get(self, request):
-        queryset = LectureNoteBoard.objects.all()
-        serializer = LectureNoteBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteBoard.objects.all()
+            serializer = LectureNoteBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = LectureNoteBoardSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = LectureNoteBoardSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteBoardDetailView(APIView):
     def get(self, request, pk):
-        queryset = LectureNoteBoard.objects.get(pk=pk)
-        serializer = LectureNoteBoardSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteBoard.objects.get(pk=pk)
+            serializer = LectureNoteBoardSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except LectureNoteBoard.DoesNotExist:
+            return Response({"error": "LectureNoteBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = LectureNoteBoard.objects.get(pk=pk)
-        serializer = LectureNoteBoardSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = LectureNoteBoard.objects.get(pk=pk)
+            serializer = LectureNoteBoardSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except LectureNoteBoard.DoesNotExist:
+            return Response({"error": "LectureNoteBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = LectureNoteBoard.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'LectureNoteBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = LectureNoteBoard.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'LectureNoteBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        except LectureNoteBoard.DoesNotExist:
+            return Response({"error": "LectureNoteBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteBoardByClassView(APIView):
     def get(self, request, pk):
-        queryset = LectureNoteBoard.objects.filter(classroom=pk)
-        serializer = LectureNoteBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteBoard.objects.filter(classroom=pk)
+            serializer = LectureNoteBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except LectureNoteBoard.DoesNotExist:
+            return Response({"error": "LectureNoteBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /LectureNoteBoard 강의자료게시판
 
 
 ### LectureNote 강의자료게시글
 class LectureNoteView(APIView):
     def get(self, request):
-        queryset = LectureNote.objects.all()
-        serializer = LectureNoteSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNote.objects.all()
+            serializer = LectureNoteSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = LectureNoteSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = LectureNoteSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteDetailView(APIView):
     def get(self, request, pk):
-        queryset = LectureNote.objects.get(pk=pk)
-        serializer = LectureNoteSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNote.objects.get(pk=pk)
+            serializer = LectureNoteSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except LectureNote.DoesNotExist:
+            return Response({"error": "LectureNote not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = LectureNote.objects.get(pk=pk)
-        serializer = LectureNoteSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = LectureNote.objects.get(pk=pk)
+            serializer = LectureNoteSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except LectureNote.DoesNotExist:
+            return Response({"error": "LectureNote not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = LectureNote.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'LectureNote deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = LectureNote.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'LectureNote deleted'}, status=status.HTTP_202_ACCEPTED)
+        except LectureNote.DoesNotExist:
+            return Response({"error": "LectureNote not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteByBoardView(APIView):
     def get(self, request, pk):
-        queryset = LectureNote.objects.filter(board=pk)
-        serializer = LectureNoteSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNote.objects.filter(board=pk)
+            serializer = LectureNoteSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /LectureNote 강의자료게시글
 
 
 ### LectureNoteComment 강의자료댓글
 class LectureNoteCommentView(APIView):
     def get(self, request):
-        queryset = LectureNoteComment.objects.all()
-        serializer = LectureNoteCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteComment.objects.all()
+            serializer = LectureNoteCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def post(self, request):
-        serializer = LectureNoteCommentSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = LectureNoteCommentSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteCommentDetailView(APIView):
     def get(self, request, pk):
-        queryset = LectureNoteComment.objects.get(pk=pk)
-        serializer = LectureNoteCommentSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteComment.objects.get(pk=pk)
+            serializer = LectureNoteCommentSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except LectureNoteComment.DoesNotExist:
+            return Response({"error": "LectureNoteComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = LectureNoteComment.objects.get(pk=pk)
-        serializer = LectureNoteCommentSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = LectureNoteComment.objects.get(pk=pk)
+            serializer = LectureNoteCommentSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except LectureNoteComment.DoesNotExist:
+            return Response({"error": "LectureNoteComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = LectureNoteComment.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = LectureNoteComment.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Test deleted'}, status=status.HTTP_202_ACCEPTED)
+        except LectureNoteComment.DoesNotExist:
+            return Response({"error": "LectureNoteComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LectureNoteCommentByPostView(APIView):
     def get(self, request, pk):
-        queryset = LectureNoteComment.objects.filter(lecture_note=pk)
-        serializer = LectureNoteCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = LectureNoteComment.objects.filter(lecture_note=pk)
+            serializer = LectureNoteCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /LectureNoteComment 강의자료댓글
 
 
 ### QuestionBoard 질문게시판
 class QuestionBoardView(APIView):
     def get(self, request):
-        queryset = QuestionBoard.objects.all()
-        serializer = QuestionBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionBoard.objects.all()
+            serializer = QuestionBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = QuestionBoardSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = QuestionBoardSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionBoardDetailView(APIView):
     def get(self, request, pk):
-        queryset = QuestionBoard.objects.get(pk=pk)
-        serializer = QuestionBoardSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionBoard.objects.get(pk=pk)
+            serializer = QuestionBoardSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except QuestionBoard.DoesNotExist:
+            return Response({"error": "QuestionBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = QuestionBoard.objects.get(pk=pk)
-        serializer = QuestionBoardSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = QuestionBoard.objects.get(pk=pk)
+            serializer = QuestionBoardSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except QuestionBoard.DoesNotExist:
+            return Response({"error": "QuestionBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = QuestionBoard.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'QuestionBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = QuestionBoard.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'QuestionBoard deleted'}, status=status.HTTP_202_ACCEPTED)
+        except QuestionBoard.DoesNotExist:
+            return Response({"error": "QuestionBoard not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionBoardByClassView(APIView):
     def get(self, request, pk):
-        queryset = QuestionBoard.objects.filter(classroom=pk)
-        serializer = QuestionBoardSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionBoard.objects.filter(classroom=pk)
+            serializer = QuestionBoardSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /QuestionBoard 질문게시판
 
 
 ### Question 질문게시글
 class QuestionView(APIView):
     def get(self, request):
-        queryset = Question.objects.all()
-        serializer = QuestionSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Question.objects.all()
+            serializer = QuestionSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = QuestionSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = QuestionSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionDetailView(APIView):
     def get(self, request, pk):
-        queryset = Question.objects.get(pk=pk)
-        serializer = QuestionSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Question.objects.get(pk=pk)
+            serializer = QuestionSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Question.DoesNotExist:
+            return Response({"error": "Question not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = Question.objects.get(pk=pk)
-        serializer = QuestionSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = Question.objects.get(pk=pk)
+            serializer = QuestionSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Question.DoesNotExist:
+            return Response({"error": "Question not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = Question.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Question deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = Question.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Question deleted'}, status=status.HTTP_202_ACCEPTED)
+        except Question.DoesNotExist:
+            return Response({"error": "Question not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionByBoardView(APIView):
     def get(self, request, pk):
-        queryset = Question.objects.filter(board=pk)
-        serializer = QuestionSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Question.objects.filter(board=pk)
+            serializer = QuestionSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Question 질문게시글
 
 
 ### Comment 댓글
 class QuestionCommentView(APIView):
     def get(self, request):
-        queryset = QuestionComment.objects.all()
-        serializer = QuestionCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionComment.objects.all()
+            serializer = QuestionCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = QuestionCommentSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = QuestionCommentSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionCommentDetailView(APIView):
     def get(self, request, pk):
-        queryset = QuestionComment.objects.get(pk=pk)
-        serializer = QuestionCommentSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionComment.objects.get(pk=pk)
+            serializer = QuestionCommentSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except QuestionComment.DoesNotExist:
+            return Response({"error": "QuestionComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = QuestionComment.objects.get(pk=pk)
-        serializer = QuestionCommentSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = QuestionComment.objects.get(pk=pk)
+            serializer = QuestionCommentSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except QuestionComment.DoesNotExist:
+            return Response({"error": "QuestionComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = QuestionComment.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'Comment deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = QuestionComment.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Comment deleted'}, status=status.HTTP_202_ACCEPTED)
+        except QuestionComment.DoesNotExist:
+            return Response({"error": "QuestionComment not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuestionCommentByPostView(APIView):
     def get(self, request, pk):
-        queryset = QuestionComment.objects.filter(question=pk)
-        serializer = QuestionCommentSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = QuestionComment.objects.filter(question=pk)
+            serializer = QuestionCommentSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Comment 댓글
 
 
 ### TestSubmit 문제 답변
 class TestSubmitView(APIView):
     def get(self, request):
-        queryset = TestSubmit.objects.all()
-        serializer = TestSubmitSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestSubmit.objects.all()
+            serializer = TestSubmitSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        serializer = TestSubmitSerializer(data=request.data)
-        if serializer.is_valid():
-            queryset = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = TestSubmitSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestSubmitDetailView(APIView):
     def get(self, request, pk):
-        queryset = TestSubmit.objects.get(pk=pk)
-        serializer = TestSubmitSerializer(queryset)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestSubmit.objects.get(pk=pk)
+            serializer = TestSubmitSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except TestSubmit.DoesNotExist:
+            return Response({"error": "TestSubmit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, pk):
-        queryset = TestSubmit.objects.get(pk=pk)
-        serializer = TestSubmitSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = TestSubmit.objects.get(pk=pk)
+            serializer = TestSubmitSerializer(queryset, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except TestSubmit.DoesNotExist:
+            return Response({"error": "TestSubmit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        queryset = TestSubmit.objects.get(pk=pk)
-        queryset.delete()
-        return Response({'message': 'TestSubmit deleted'}, status=status.HTTP_202_ACCEPTED)
+        try:
+            queryset = TestSubmit.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'TestSubmit deleted'}, status=status.HTTP_202_ACCEPTED)
+        except TestSubmit.DoesNotExist:
+            return Response({"error": "TestSubmit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TestSubmitByTestView(APIView):
     def get(self, request, pk):
-        queryset = TestSubmit.objects.filter(test=pk)
-        serializer = TestSubmitSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = TestSubmit.objects.filter(test=pk)
+            serializer = TestSubmitSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /TestSubmit 문제 답변
