@@ -1,3 +1,15 @@
 from django.contrib import admin
+from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
+    Question, QuestionBoard, QuestionComment, TestSubmit
 
-# Register your models here.
+admin.site.register(Classroom)
+admin.site.register(Test)
+admin.site.register(TestBoard)
+admin.site.register(TestComment)
+admin.site.register(LectureNote)
+admin.site.register(LectureNoteBoard)
+admin.site.register(LectureNoteComment)
+admin.site.register(Question)
+admin.site.register(QuestionBoard)
+admin.site.register(QuestionComment)
+admin.site.register(TestSubmit)
