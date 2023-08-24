@@ -781,7 +781,10 @@ class TestSubmitDetailView(APIView):
             if test_obj.auto_score:
                 answer_status = user_answer in solution
             else:
-                answer_status = None
+                try:
+                    answer_status = request.data['answer_status']
+                except:
+                    answer_status = None
 
             data = {
                 'test': test_pk,
