@@ -68,7 +68,27 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+
+    # For drf-spectacular
+    'drf_spectacular',
 ]
+
+SPECTACULAR_SETTINGS = {
+    # drf-spectacular 라이브러리 version up이 없이도 자신의 원하는 swagger-ui의 version을 사용할수있다.
+    # swagger-ui version 정보는 여기서 확인 https://www.npmjs.com/package/swagger-ui
+    'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
+    'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
+
+    "SWAGGER_UI_SETTINGS": {
+        'deepLinking': True,  # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)
+        'persistAuthorization': True,  # True 이면 SwaggerUI상 Authorize에 입력된 정보가 새로고침을 하더라도 초기화되지 않습니다.
+        'displayOperationId': True,  # True이면 API의 urlId 값을 노출합니다. 대체로 DRF api name둘과 일치하기때문에 api를 찾을때 유용합니다.
+        'filter': True,  # True 이면 Swagger UI에서 'Filter by Tag' 검색이 가능합니다.
+        # Swagger UI 가 제공하는 UI 커스터마이징 옵션값들입니다. 아래 링크를 보면 어떤 커스터마이징 옵션들이 존재하는지 알수있습니다.
+        # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    },
+}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -233,7 +253,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    )
+    ),
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 REST_AUTH = {

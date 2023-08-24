@@ -19,11 +19,24 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from drf_spectacular.views import SpectacularJSONAPIView
+from drf_spectacular.views import SpectacularRedocView
+from drf_spectacular.views import SpectacularSwaggerView
+from drf_spectacular.views import SpectacularYAMLAPIView
+
+
 urlpatterns = [
     path('user/', include('user.urls')),
     path('admin/', admin.site.urls),
     path('news/', include('news.urls')),
-    path('classroom/', include('classroom.urls'))
+    path('classroom/', include('classroom.urls')),
+
+    # Open API 자체를 조회 : json, yaml, 
+    path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
+    path("docs/yaml/", SpectacularYAMLAPIView.as_view(), name="swagger-yaml"),
+    # Open API Document UI로 조회: Swagger, Redoc
+    path("docs/swagger/", SpectacularSwaggerView.as_view(url_name="schema-json"), name="swagger-ui",),
+    path("docs/redoc/", SpectacularRedocView.as_view(url_name="schema-json"), name="redoc",),
 ]
 
 if settings.DEBUG:
