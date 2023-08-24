@@ -35,7 +35,8 @@ class Test(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     content = models.TextField()
-    solution = models.TextField()
+    solution = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
+    auto_score = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -144,9 +145,10 @@ class QuestionComment(models.Model):
 
 
 class TestSubmit(models.Model):
-    test = models.ForeignKey(TestBoard, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+    user_answer = models.TextField()
+    answer_status = models.BooleanField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

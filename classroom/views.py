@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
     Question, QuestionBoard, QuestionComment, TestSubmit
@@ -734,9 +735,25 @@ class TestSubmitView(APIView):
 
     def post(self, request):
         try:
-            serializer = TestSubmitSerializer(data=request.data)
+            test_pk = request.data['test']
+            test_obj = Test.objects.get(pk=test_pk)
+
+            user_answer = request.data['user_answer']
+            solution = test_obj.solution
+            if test_obj.auto_score:
+                answer_status = user_answer in solution
+            else:
+                answer_status = None
+
+            data = {
+                'test': test_pk,
+                'user_answer': user_answer,
+                'answer_status': answer_status
+            }
+
+            serializer = TestSubmitSerializer(data=data)
             if serializer.is_valid():
-                queryset = serializer.save()
+                queryset = serializer.save(answer_status=answer_status)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -756,8 +773,24 @@ class TestSubmitDetailView(APIView):
 
     def post(self, request, pk):
         try:
+            test_pk = request.data['test']
+            test_obj = Test.objects.get(pk=test_pk)
+
+            user_answer = request.data['user_answer']
+            solution = test_obj.solution
+            if test_obj.auto_score:
+                answer_status = user_answer in solution
+            else:
+                answer_status = None
+
+            data = {
+                'test': test_pk,
+                'user_answer': user_answer,
+                'answer_status': answer_status
+            }
+
             queryset = TestSubmit.objects.get(pk=pk)
-            serializer = TestSubmitSerializer(queryset, data=request.data)
+            serializer = TestSubmitSerializer(queryset, data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
