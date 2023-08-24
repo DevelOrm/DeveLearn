@@ -74,19 +74,31 @@ INSTALLED_APPS = [
 ]
 
 SPECTACULAR_SETTINGS = {
-    # drf-spectacular 라이브러리 version up이 없이도 자신의 원하는 swagger-ui의 version을 사용할수있다.
-    # swagger-ui version 정보는 여기서 확인 https://www.npmjs.com/package/swagger-ui
+    'TITLE': 'drf-spectacular API Document',
+    'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다.',
+    'CONTACT': {'name': 'DeveLorm', 'url': 'https://github.com/DevelOrm/DeveLearn.git'},
+
     'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
     'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
 
+
     "SWAGGER_UI_SETTINGS": {
-        'deepLinking': True,  # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)
-        'persistAuthorization': True,  # True 이면 SwaggerUI상 Authorize에 입력된 정보가 새로고침을 하더라도 초기화되지 않습니다.
-        'displayOperationId': True,  # True이면 API의 urlId 값을 노출합니다. 대체로 DRF api name둘과 일치하기때문에 api를 찾을때 유용합니다.
-        'filter': True,  # True 이면 Swagger UI에서 'Filter by Tag' 검색이 가능합니다.
-        # Swagger UI 가 제공하는 UI 커스터마이징 옵션값들입니다. 아래 링크를 보면 어떤 커스터마이징 옵션들이 존재하는지 알수있습니다.
-        # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+        # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)
+        'deepLinking': True,
+        # True 이면 SwaggerUI상 Authorize에 입력된 정보가 새로고침을 하더라도 초기화되지 않습니다.
+        'persistAuthorization': True,
+        # True이면 API의 urlId 값을 노출합니다. 대체로 DRF api name둘과 일치하기때문에 api를 찾을때 유용합니다.
+        'displayOperationId': True,
+        # True 이면 Swagger UI에서 'Filter by Tag' 검색이 가능합니다.
+        'filter': True,
+
+        'dom_id': '#swagger-ui',
+        'layout': 'BaseLayout',
     },
+
+    'VERSION': '1.0.0',
+    # OAS3 Meta정보 API를 비노출 처리
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 

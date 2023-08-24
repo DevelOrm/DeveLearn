@@ -2,12 +2,13 @@ from rest_framework import serializers
 from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
     Question, QuestionBoard, QuestionComment, TestSubmit
 
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema_field, OpenApiTypes
 
 class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
         fields = '__all__'
-
+        
 
 class TestBoardSerializer(serializers.ModelSerializer):
     class Meta:

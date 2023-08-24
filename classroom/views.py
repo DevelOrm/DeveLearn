@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,9 +8,118 @@ from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerialize
     LectureNoteSerializer, LectureNoteBoardSerializer, LectureNoteCommentSerializer, QuestionSerializer, \
     QuestionBoardSerializer, QuestionCommentSerializer, TestSubmitSerializer
 
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema, OpenApiTypes
+from rest_framework.decorators import action
+
 
 ### Classroom 클래스룸
 class ClassroomView(APIView):
+    @extend_schema(
+        # responses={status.HTTP_200_OK: OpenApiExample("Classroom list example", response_serializer=ClassroomSerializer)},
+        summary="클래스룸 전체 리스트 보기", # summary : 해당 method 요약
+        description="클래스룸 전체 리스트 보기", # description: 해당 method 설명
+        tags=["Classroom"], # tags : 문서상 보여줄 묶음의 단위
+        responses=ClassroomSerializer,
+        methods=["GET", "POST", "DELETE", "PUT", "PATCH"],
+        # auth=["string"],
+        # operation_id: Optional[str] = None,
+	    # parameters: Optional[List[Union[OpenApiParameter, _SerializerType]]] = None,
+		# request: Any = empty,
+		# auth: Optional[List[str]] = None,
+		# deprecated: Optional[bool] = None,
+		# exclude: bool = False,
+		# operation: Optional[Dict] = None,
+		# methods: Optional[List[str]] = None,
+		# versions: Optional[List[str]] = None,
+		# examples: Optional[List[OpenApiExample]] = None,
+
+        # operation_id : 자동으로 설정되는 id 값, 대체로 수동할당하여 쓰진 않음
+		# parameters : 해당 path로 받기로 예상된 파라미터 값 (Serializer or OpenApiParameter 사용)
+		# request : 요청시 전달될 content의 형태
+		# responses : 응답시 전달될 content의 형태
+		# auth : 해당 method에 접근하기 위한 인증방법
+		# description: 해당 method 설명
+		# summary : 해당 method 요약
+		# deprecated : 해당 method 사용여부 
+		# tags : 문서상 보여줄 묶음의 단위
+		# exclude : 문서에서 제외여부  
+		# operation : ??? json -> yaml 하기위한 dictionary??? 
+		# methods : 요청 받을 Http method 목록
+		# versions : 문서화 할때 사용할 openAPI 버전
+		# examples : 요청/응답에 대한 예시
+        
+        examples=[
+            OpenApiExample(
+                response_only=True,
+                summary="summary example",
+                name="success_example",
+                value={
+                    "id": "sample",
+                    "class_name": "sample",
+                    "class_info": "sample",
+                    "created_at": "sample",
+                    "tag": "sample",
+                },
+            ),
+        ],
+        parameters=[
+            OpenApiParameter(
+                name="path_parameter",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="아이디 입니다.",
+                required=True,
+            ),
+            OpenApiParameter(
+                name="text_parameter",
+                type=str,
+                description="text_param 입니다.",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="select_parameter",
+                type=str,
+                description="first_param 입니다.",
+				
+                #enum : 받을 수 있는 값을 제한함
+                enum=['선택1', '선택2', '선택3'], 
+                examples=[
+                    OpenApiExample(
+                        name="Select Parameter Example",
+                        summary="요약1",
+                        description="설명글은 길게 작성합니다",
+                        value="선택1",
+                    ),
+                    OpenApiExample(
+                        "Select Parameter Example2",
+                        summary="요약2",
+                        description="두번째 설명글은 더 길게 작성합니다",
+                        value="선택4",
+                    ),
+                ],
+            ),
+            OpenApiParameter(
+                name="date_parameter",
+                type=OpenApiTypes.DATE,
+                location=OpenApiParameter.QUERY,
+                description="date filter",
+                examples=[
+                    OpenApiExample(
+                        name="이것은 Query Parameter Example입니다.",
+                        summary="요약입니다",
+                        description="설명글은 길게 작성합니다",
+                        value="1991-03-02",
+                    ),
+                    OpenApiExample(
+                        name="이것은 Query Parameter Example2입니다.",
+                        summary="두번째 요약입니다",
+                        description="두번째 설명글은 더 길게 작성합니다",
+                        value="1993-08-30",
+                    ),
+                ],
+            ),
+        ],
+    )
     def get(self, request):
         try:
             queryset = Classroom.objects.all()
@@ -18,6 +128,17 @@ class ClassroomView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        # responses={
+        #     status.HTTP_201_CREATED: OpenApiExample("Classroom created example", response_serializer=ClassroomSerializer),
+        #     status.HTTP_400_BAD_REQUEST: "Bad request"
+        # },
+        summary="신규 클래스룸 생성",
+        description="신규 클래스룸 생성",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request):
         try:
             serializer = ClassroomSerializer(data=request.data)
@@ -30,6 +151,17 @@ class ClassroomView(APIView):
 
 
 class ClassroomDetailView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        # responses={
+        #     status.HTTP_201_CREATED: OpenApiExample("Classroom created example", response_serializer=ClassroomSerializer),
+        #     status.HTTP_400_BAD_REQUEST: "Bad request"
+        # },
+        summary="임시",
+        description="임시",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -40,6 +172,17 @@ class ClassroomDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        # responses={
+        #     status.HTTP_201_CREATED: OpenApiExample("Classroom created example", response_serializer=ClassroomSerializer),
+        #     status.HTTP_400_BAD_REQUEST: "Bad request"
+        # },
+        summary="임시",
+        description="임시",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -53,6 +196,17 @@ class ClassroomDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        # responses={
+        #     status.HTTP_201_CREATED: OpenApiExample("Classroom created example", response_serializer=ClassroomSerializer),
+        #     status.HTTP_400_BAD_REQUEST: "Bad request"
+        # },
+        summary="임시",
+        description="임시",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -65,6 +219,17 @@ class ClassroomDetailView(APIView):
 
 
 class ClassroomTagView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        # responses={
+        #     status.HTTP_201_CREATED: OpenApiExample("Classroom created example", response_serializer=ClassroomSerializer),
+        #     status.HTTP_400_BAD_REQUEST: "Bad request"
+        # },
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Tag"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request):
         try:
             queryset = Classroom.objects.all()
@@ -78,6 +243,13 @@ class ClassroomTagView(APIView):
 
 
 class ClassroomByTeacherView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Classroom.objects.filter(user=pk)
@@ -88,6 +260,13 @@ class ClassroomByTeacherView(APIView):
 
 
 class AllBoardByClassView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="클래스 내 게시판 보기",
+        description="임시",
+        tags=["Classroom-Board"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request):
         try:
             test_board_queryset = TestBoard.objects.all()
@@ -117,6 +296,13 @@ class AllBoardByClassView(APIView):
 
 ### TestBoard 문제게시판
 class TestBoardView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="문제 게시판 보기",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request):
         try:
             queryset = TestBoard.objects.all()
@@ -125,6 +311,13 @@ class TestBoardView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="문제 게시판 생성",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request):
         try:
             serializer = TestBoardSerializer(data=request.data)
@@ -137,6 +330,13 @@ class TestBoardView(APIView):
 
 
 class TestBoardDetailView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="문제 게시판 상세보기",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -147,6 +347,13 @@ class TestBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="문제 게시판 생성",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -160,6 +367,13 @@ class TestBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="문제 게시판 삭제",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -172,6 +386,13 @@ class TestBoardDetailView(APIView):
 
 
 class TestBoardByClassView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestBoard.objects.filter(classroom=pk)
@@ -184,6 +405,13 @@ class TestBoardByClassView(APIView):
 
 ### Test 문제게시글
 class TestView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request):
         try:
             queryset = Test.objects.all()
@@ -192,6 +420,13 @@ class TestView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request):
         try:
             serializer = TestSerializer(data=request.data)
@@ -204,6 +439,13 @@ class TestView(APIView):
 
 
 class TestDetailView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -214,6 +456,13 @@ class TestDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -227,6 +476,13 @@ class TestDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -239,6 +495,13 @@ class TestDetailView(APIView):
 
 
 class TestByBoardView(APIView):
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="임시",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Test.objects.filter(board=pk)
@@ -248,6 +511,8 @@ class TestByBoardView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Test 문제게시글
 
+## classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
+## ==================================================================================
 
 ### TestComment 문제댓글
 class TestCommentView(APIView):
