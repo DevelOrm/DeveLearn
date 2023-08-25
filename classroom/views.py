@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
-    Question, QuestionBoard, QuestionComment, TestSubmit
+    Question, QuestionBoard, QuestionComment, TestSubmit, Subscription
 from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerializer, TestCommentSerializer, \
     LectureNoteSerializer, LectureNoteBoardSerializer, LectureNoteCommentSerializer, QuestionSerializer, \
-    QuestionBoardSerializer, QuestionCommentSerializer, TestSubmitSerializer
+    QuestionBoardSerializer, QuestionCommentSerializer, TestSubmitSerializer, SubscriptionSerializer
 
 
 ### Classroom 클래스룸
@@ -114,6 +114,79 @@ class AllBoardByClassView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Classroom 클래스룸
+
+
+### Subscription 구독정보
+class SubscriptionView(APIView):
+    def get(self, request, pk):
+        try:
+            queryset = Subscription.objects.filter(classroom=pk)
+            serializer = SubscriptionSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request, pk):
+        try:
+            data = request.data
+            data['classroom'] = pk
+            data['user'] = request.user.pk
+            serializer = SubscriptionSerializer(data=data)
+            if serializer.is_valid():
+                queryset = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SubscriptionDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            queryset = Subscription.objects.get(pk=pk)
+            serializer = SubscriptionSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Subscription.DoesNotExist:
+            return Response({"error": "Subscription not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request, pk):
+        try:
+            data = request.data
+            data['user'] = request.user.pk
+            queryset = Subscription.objects.get(pk=pk)
+            data['classroom'] = queryset.classroom.pk
+            serializer = SubscriptionSerializer(queryset, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Subscription.DoesNotExist:
+            return Response({"error": "Subscription not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request, pk):
+        try:
+            queryset = Subscription.objects.get(pk=pk)
+            queryset.delete()
+            return Response({'message': 'Subscription deleted'}, status=status.HTTP_202_ACCEPTED)
+        except Subscription.DoesNotExist:
+            return Response({"error": "Subscription not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SubscriptionByUserView(APIView):
+    def get(self, request, pk):
+        try:
+            queryset = Subscription.objects.filter(user=pk)
+            serializer = SubscriptionSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+### /Subscription 구독정보
 
 
 ### TestBoard 문제게시판
@@ -740,6 +813,7 @@ class TestSubmitView(APIView):
 
             user_answer = request.data['user_answer']
             solution = test_obj.solution
+            user = request.data['user']
             if test_obj.auto_score:
                 answer_status = user_answer in solution
             else:
@@ -748,7 +822,8 @@ class TestSubmitView(APIView):
             data = {
                 'test': test_pk,
                 'user_answer': user_answer,
-                'answer_status': answer_status
+                'answer_status': answer_status,
+                'user': user
             }
 
             serializer = TestSubmitSerializer(data=data)
@@ -786,13 +861,16 @@ class TestSubmitDetailView(APIView):
                 except:
                     answer_status = None
 
+            queryset = TestSubmit.objects.get(pk=pk)
+            user = queryset.user.pk
+
             data = {
                 'test': test_pk,
                 'user_answer': user_answer,
-                'answer_status': answer_status
+                'answer_status': answer_status,
+                'user': user
             }
 
-            queryset = TestSubmit.objects.get(pk=pk)
             serializer = TestSubmitSerializer(queryset, data=data)
             if serializer.is_valid():
                 serializer.save()
