@@ -20,20 +20,30 @@ class ClassroomView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        try:
-            serializer = ClassroomSerializer(data=request.data)
-            if serializer.is_valid():
-                queryset = serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if request.user.is_authenticated:
+            context = {
+                'user': request.user.pk,
+                'class_name': request.data['class_name'],
+                'class_info': request.data['class_info'],
+                'tag': request.data['tag']
+            }
+            try:
+                serializer = ClassroomSerializer(data=context)
+                if serializer.is_valid():
+                    queryset = serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "need to login"}, status=status.HTTP_403_FORBIDDEN)
 
 
 class ClassroomDetailView(APIView):
     def get(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
+            print(request.user)
+            print(queryset.user)
             serializer = ClassroomSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Classroom.DoesNotExist:
@@ -44,7 +54,13 @@ class ClassroomDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
-            serializer = ClassroomSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'class_name': request.data['class_name'],
+                'class_info': request.data['class_info'],
+                'tag': request.data['tag']
+            }
+            serializer = ClassroomSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -128,10 +144,12 @@ class SubscriptionView(APIView):
 
     def post(self, request, pk):
         try:
-            data = request.data
-            data['classroom'] = pk
-            data['user'] = request.user.pk
-            serializer = SubscriptionSerializer(data=data)
+            context = {
+                "user": request.user.pk,
+                "subscription_memo": request.data['subscription_memo'],
+                "classroom": pk
+            }
+            serializer = SubscriptionSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -153,11 +171,14 @@ class SubscriptionDetailView(APIView):
 
     def post(self, request, pk):
         try:
-            data = request.data
-            data['user'] = request.user.pk
             queryset = Subscription.objects.get(pk=pk)
-            data['classroom'] = queryset.classroom.pk
-            serializer = SubscriptionSerializer(queryset, data=data)
+            context = {
+                'user': queryset.user.pk,
+                'subscription_memo': request.data['subscription_memo'],
+                'classroom': queryset.classroom.pk
+            }
+            print(queryset.user.pk)
+            serializer = SubscriptionSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -201,7 +222,13 @@ class TestBoardView(APIView):
 
     def post(self, request):
         try:
-            serializer = TestBoardSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'classroom': request.data['classroom'],
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = TestBoardSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -224,7 +251,13 @@ class TestBoardDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
-            serializer = TestBoardSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'classroom': queryset.classroom.pk,
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = TestBoardSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -268,7 +301,15 @@ class TestView(APIView):
 
     def post(self, request):
         try:
-            serializer = TestSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'board': request.data['board'],
+                'title': request.data['title'],
+                'content': request.data['content'],
+                'solution': request.data['solution'],
+                'auto_score': request.data['auto_score']
+            }
+            serializer = TestSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -291,7 +332,15 @@ class TestDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
-            serializer = TestSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'board': queryset.board.pk,
+                'title': request.data['title'],
+                'content': request.data['content'],
+                'solution': request.data['solution'],
+                'auto_score': request.data['auto_score']
+            }
+            serializer = TestSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -333,10 +382,14 @@ class TestCommentView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def post(self, request):
         try:
-            serializer = TestCommentSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'test': request.data['test'],
+                'content': request.data['content']
+            }
+            serializer = TestCommentSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -359,7 +412,12 @@ class TestCommentDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = TestComment.objects.get(pk=pk)
-            serializer = TestCommentSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'test': queryset.test.pk,
+                'content': request.data['content']
+            }
+            serializer = TestCommentSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -403,7 +461,13 @@ class LectureNoteBoardView(APIView):
 
     def post(self, request):
         try:
-            serializer = LectureNoteBoardSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'classroom': request.data['classroom'],
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = LectureNoteBoardSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -426,7 +490,13 @@ class LectureNoteBoardDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = LectureNoteBoard.objects.get(pk=pk)
-            serializer = LectureNoteBoardSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'classroom': queryset.classroom.pk,
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = LectureNoteBoardSerializer(queryset, context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -472,7 +542,15 @@ class LectureNoteView(APIView):
 
     def post(self, request):
         try:
-            serializer = LectureNoteSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'board': request.data['board'],
+                'title': request.data['title'],
+                'content': request.data['content'],
+                'upload_file': request.data['upload_file'],
+                'upload_image': request.data['upload_image']
+            }
+            serializer = LectureNoteSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -495,7 +573,15 @@ class LectureNoteDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = LectureNote.objects.get(pk=pk)
-            serializer = LectureNoteSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'board': queryset.board.pk,
+                'title': request.data['title'],
+                'content': request.data['content'],
+                'upload_file': request.data['upload_file'],
+                'upload_image': request.data['upload_image']
+            }
+            serializer = LectureNoteSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -537,10 +623,14 @@ class LectureNoteCommentView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def post(self, request):
         try:
-            serializer = LectureNoteCommentSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'lecture_note': request.data['lecture_note'],
+                'content': request.data['content']
+            }
+            serializer = LectureNoteCommentSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -563,7 +653,12 @@ class LectureNoteCommentDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
-            serializer = LectureNoteCommentSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'lecture_note': queryset.lecture_note.pk,
+                'content': request.data['content']
+            }
+            serializer = LectureNoteCommentSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -607,7 +702,13 @@ class QuestionBoardView(APIView):
 
     def post(self, request):
         try:
-            serializer = QuestionBoardSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'classroom': request.data['classroom'],
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = QuestionBoardSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -630,7 +731,13 @@ class QuestionBoardDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = QuestionBoard.objects.get(pk=pk)
-            serializer = QuestionBoardSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'classroom': queryset.classroom.pk,
+                'title': request.data['title'],
+                'content': request.data['content']
+            }
+            serializer = QuestionBoardSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -697,7 +804,14 @@ class QuestionDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = Question.objects.get(pk=pk)
-            serializer = QuestionSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'board': queryset.board.pk,
+                'title': request.data['title'],
+                'content': request.data['content'],
+                'upload_image': request.data['upload_image']
+            }
+            serializer = QuestionSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -741,7 +855,12 @@ class QuestionCommentView(APIView):
 
     def post(self, request):
         try:
-            serializer = QuestionCommentSerializer(data=request.data)
+            context = {
+                'user': request.user.pk,
+                'question': request.data['question'],
+                'content': request.data['content']
+            }
+            serializer = QuestionCommentSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -764,7 +883,12 @@ class QuestionCommentDetailView(APIView):
     def post(self, request, pk):
         try:
             queryset = QuestionComment.objects.get(pk=pk)
-            serializer = QuestionCommentSerializer(queryset, data=request.data)
+            context = {
+                'user': queryset.user.pk,
+                'question': queryset.question.pk,
+                'content': request.data['content']
+            }
+            serializer = QuestionCommentSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -810,23 +934,22 @@ class TestSubmitView(APIView):
         try:
             test_pk = request.data['test']
             test_obj = Test.objects.get(pk=test_pk)
-
-            user_answer = request.data['user_answer']
             solution = test_obj.solution
-            user = request.data['user']
+            user_answer = request.data['user_answer']
+
             if test_obj.auto_score:
                 answer_status = user_answer in solution
             else:
                 answer_status = None
 
-            data = {
+            context = {
+                'user': request.user.pk,
                 'test': test_pk,
                 'user_answer': user_answer,
                 'answer_status': answer_status,
-                'user': user
             }
 
-            serializer = TestSubmitSerializer(data=data)
+            serializer = TestSubmitSerializer(data=context)
             if serializer.is_valid():
                 queryset = serializer.save(answer_status=answer_status)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -850,9 +973,9 @@ class TestSubmitDetailView(APIView):
         try:
             test_pk = request.data['test']
             test_obj = Test.objects.get(pk=test_pk)
-
-            user_answer = request.data['user_answer']
             solution = test_obj.solution
+            user_answer = request.data['user_answer']
+
             if test_obj.auto_score:
                 answer_status = user_answer in solution
             else:
@@ -862,16 +985,15 @@ class TestSubmitDetailView(APIView):
                     answer_status = None
 
             queryset = TestSubmit.objects.get(pk=pk)
-            user = queryset.user.pk
 
-            data = {
+            context = {
+                'user': queryset.user.pk,
                 'test': test_pk,
                 'user_answer': user_answer,
-                'answer_status': answer_status,
-                'user': user
+                'answer_status': answer_status
             }
 
-            serializer = TestSubmitSerializer(queryset, data=data)
+            serializer = TestSubmitSerializer(queryset, data=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
