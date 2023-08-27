@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     # Custom App
     'classroom',
     'news',
-    'user'
+    'user',
     # For allauth
     'django.contrib.sites',
     'allauth',
@@ -228,9 +228,6 @@ ACCOUNT_LOGOUT_ON_GET = False # Post 요청 필요, True 비권장
 # ACCOUNT_LOGOUT_REDIRECT_URL = 'main'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     )
@@ -238,14 +235,17 @@ REST_FRAMEWORK = {
 
 REST_AUTH = {
     'USE_JWT': True,
+    'SESSION_LOGIN': False,
     'JWT_AUTH_HTTPONLY': False, # Default True
     'JWT_AUTH_COOKIE_USE_CSRF' : True,
     'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
     'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
     'LOGOUT_ON_PASSWORD_CHANGE' : True,
+    'REGISTER_SERIALIZER': 'user.serializers.UserRegisterSerializer',
 }
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,

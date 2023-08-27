@@ -4,19 +4,24 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 
-from rest_framework import viewsets
-from rest_framework import serializers
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from user.models import User
+from user.serializers import UserInfoSerializer
 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['user_id', 'nickname', 'last_login', 'joined_date', 'is_teacher']
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserInfoView(APIView):
+    def get(self, request):
+        user = self.request.user
+        if user == 'AnonymousUser':
+            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            queryset = User.objects.filter(user_id = user.user_id)
+            serializer = UserInfoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter
