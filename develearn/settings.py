@@ -271,16 +271,16 @@ REST_FRAMEWORK = {
 }
 
 REST_AUTH = {
-    'USE_JWT': True,
-    'JWT_AUTH_HTTPONLY': False, # Default True
-    'JWT_AUTH_COOKIE_USE_CSRF' : True,
+    'USE_JWT': True, # Default True
+    'JWT_AUTH_HTTPONLY': True, # Default True
+    'JWT_AUTH_COOKIE_USE_CSRF' : True, # Default True
     'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
     'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
-    'LOGOUT_ON_PASSWORD_CHANGE' : True,
+    'LOGOUT_ON_PASSWORD_CHANGE' : True, # Default True
 }
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'BLACKLIST_AFTER_ROTATION': False,
 }
