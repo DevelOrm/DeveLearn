@@ -80,7 +80,7 @@ SPECTACULAR_SETTINGS = {
 
     'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
     'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
-
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_spectacular.contrib.django_rest_framework.AutoSchema',
 
     "SWAGGER_UI_SETTINGS": {
         # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)

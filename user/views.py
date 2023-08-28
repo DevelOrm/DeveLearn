@@ -9,19 +9,15 @@ from rest_framework import serializers
 from user.models import User
 
 from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema, OpenApiTypes
+from rest_framework.decorators import action
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['user_id', 'nickname', 'last_login', 'joined_date', 'is_teacher']
 
-# @extend_schema_view(
-# 	#사용법 method_name = extend_schema()
-#     list=extend_schema(
-# 				tags=['유저'], 
-# 				description='유저'
-# 		)
-# )
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

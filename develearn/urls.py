@@ -32,11 +32,11 @@ urlpatterns = [
     path('classroom/', include('classroom.urls')),
 
     # Open API 자체를 조회 : json, yaml, 
-    path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
-    path("docs/yaml/", SpectacularYAMLAPIView.as_view(), name="swagger-yaml"),
+    path("api/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
+    path("api/yaml/", SpectacularYAMLAPIView.as_view(), name="swagger-yaml"),
     # Open API Document UI로 조회: Swagger, Redoc
-    path("docs/swagger/", SpectacularSwaggerView.as_view(url_name="schema-json"), name="swagger-ui",),
-    path("docs/redoc/", SpectacularRedocView.as_view(url_name="schema-json"), name="redoc",),
+    path("api/swagger/", SpectacularSwaggerView.as_view(url_name="schema-json"), name="swagger-ui",),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema-json"), name="redoc-ui",),
 ]
 
 if settings.DEBUG:
