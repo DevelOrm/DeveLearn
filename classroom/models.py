@@ -10,6 +10,7 @@ class Classroom(models.Model):
     class_name = models.CharField(max_length=50)
     class_info = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     tag = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
 
     class Meta:
@@ -24,6 +25,7 @@ class Subscription(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     subscription_memo = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -38,6 +40,7 @@ class TestBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -54,6 +57,7 @@ class Test(models.Model):
     solution = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
     auto_score = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -68,6 +72,7 @@ class LectureNoteBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -84,6 +89,7 @@ class LectureNote(models.Model):
     upload_file = models.FileField(upload_to='lecturenote/file/', null=True, blank=True)
     upload_image = models.ImageField(upload_to='lecturenote/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -98,6 +104,7 @@ class QuestionBoard(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -113,6 +120,7 @@ class Question(models.Model):
     content = models.TextField()
     upload_image = models.ImageField(upload_to='question/image/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -126,6 +134,7 @@ class TestComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -139,6 +148,7 @@ class LectureNoteComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -152,6 +162,7 @@ class QuestionComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -166,6 +177,7 @@ class TestSubmit(models.Model):
     user_answer = models.TextField()
     answer_status = models.BooleanField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
