@@ -28,6 +28,7 @@ class Subscription(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        unique_together = ('user', 'classroom')
         ordering = ['-created_at']
 
     def __str__(self):
@@ -180,6 +181,7 @@ class TestSubmit(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        unique_together = ('test', 'user')
         ordering = ['-created_at']
 
     def __str__(self):
