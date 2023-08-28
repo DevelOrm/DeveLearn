@@ -1170,8 +1170,7 @@ class TestSubmitDetailView(APIView):
 
     def post(self, request, pk):
         try:
-            test_pk = request.data['test']
-            test_obj = Test.objects.get(pk=test_pk)
+            test_obj = Test.objects.get(pk=pk)
             if request.user.is_authenticated and (request.user.is_teacher or request.user == queryset.user):
                 solution = test_obj.solution
                 user_answer = request.data['user_answer']
@@ -1188,7 +1187,7 @@ class TestSubmitDetailView(APIView):
 
                 context = {
                     'user': queryset.user.pk,
-                    'test': test_pk,
+                    'test': pk,
                     'user_answer': user_answer,
                     'answer_status': answer_status
                 }
