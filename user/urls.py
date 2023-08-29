@@ -13,7 +13,7 @@ urlpatterns = [
     path('duplication/', Duplication_Check.as_view(), name='duplication_check'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
-    path('password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
+    path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
     path('registration/', include('dj_rest_auth.registration.urls')),
     re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ConfirmEmailView.as_view(), name='account_confirm_email'),
