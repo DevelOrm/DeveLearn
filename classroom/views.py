@@ -1,3 +1,5 @@
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema, OpenApiTypes
+from rest_framework.decorators import action
 from django.http import HttpRequest, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -30,8 +32,6 @@ class TestSubmitPagination(PageNumberPagination):
     page_size = 5
     page_query_param = 'page'
 
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema, OpenApiTypes
-from rest_framework.decorators import action
 
 ###################
 # schema-option 정리
@@ -56,21 +56,25 @@ from rest_framework.decorators import action
 # auth : 해당 method에 접근하기 위한 인증방법
 # description: 해당 method 설명
 # summary : 해당 method 요약
-# deprecated : 해당 method 사용여부 
+# deprecated : 해당 method 사용여부
 # tags : 문서상 보여줄 묶음의 단위
-# exclude : 문서에서 제외여부  
-# operation : ??? json -> yaml 하기위한 dictionary??? 
+# exclude : 문서에서 제외여부
+# operation : ??? json -> yaml 하기위한 dictionary???
 # methods : 요청 받을 Http method 목록
 # versions : 문서화 할때 사용할 openAPI 버전
 # examples : 요청/응답에 대한 예시
 ####################
 
-### Classroom 클래스룸
+# Classroom 클래스룸
+
+
 class ClassroomView(APIView):
+    paginator = ClassroomPagination()
+
     @extend_schema(
-        summary="클래스 목록 조회", # summary : 해당 method 요약
-        description="클래스 목록 조회", # description: 해당 method 설명
-        tags=["Classroom"], # tags : 문서상 보여줄 묶음의 단위
+        summary="클래스 목록 조회",  # summary : 해당 method 요약
+        description="클래스 목록 조회",  # description: 해당 method 설명
+        tags=["Classroom"],  # tags : 문서상 보여줄 묶음의 단위
         responses=ClassroomSerializer,
         examples=[
             OpenApiExample(
@@ -84,7 +88,7 @@ class ClassroomView(APIView):
                     "class_name": "class500",
                     "class_info": "info500",
                     "tag": [
-                    "#500"
+                        "#500"
                     ]
                 },
             ),
@@ -108,9 +112,9 @@ class ClassroomView(APIView):
         #         name="select_parameter",
         #         type=str,
         #         description="first_param 입니다.",
-				
+
         #         #enum : 받을 수 있는 값을 제한함
-        #         enum=['선택1', '선택2', '선택3'], 
+        #         enum=['선택1', '선택2', '선택3'],
         #         examples=[
         #             OpenApiExample(
         #                 name="Select Parameter Example",
@@ -148,9 +152,6 @@ class ClassroomView(APIView):
         #     ),
         # ],
     )
-
-    paginator = ClassroomPagination()
-
     def get(self, request):
         try:
             queryset = Classroom.objects.all()
@@ -251,14 +252,14 @@ class ClassroomDetailView(APIView):
 
 
 class ClassroomTagView(APIView):
+    paginator = ClassroomPagination()
+
     @extend_schema(
         summary="태그별 클래스 조회",
         description="태그별 클래스 조회",
         tags=["Classroom-Tag"],
         responses=ClassroomSerializer,
     )
-    paginator = ClassroomPagination()
-
     def get(self, request):
         try:
             queryset = Classroom.objects.all()
@@ -273,14 +274,14 @@ class ClassroomTagView(APIView):
 
 
 class ClassroomByTeacherView(APIView):
+    paginator = ClassroomPagination()
+
     @extend_schema(
         summary="교사별 클래스 조회",
         description="교사별 클래스 조회",
         tags=["Classroom"],
         responses=ClassroomSerializer,
     )
-    paginator = ClassroomPagination()
-
     def get(self, request, pk):
         try:
             queryset = Classroom.objects.filter(user=pk)
@@ -307,13 +308,19 @@ class AllBoardByClassView(APIView):
 
                 classroom = request.GET.get('classroom', '')
                 if classroom:
-                    test_board_queryset = test_board_queryset.filter(classroom=classroom)
-                    lecture_note_board_queryset = lecture_note_board_queryset.filter(classroom=classroom)
-                    question_board_queryset = question_board_queryset.filter(classroom=classroom)
+                    test_board_queryset = test_board_queryset.filter(
+                        classroom=classroom)
+                    lecture_note_board_queryset = lecture_note_board_queryset.filter(
+                        classroom=classroom)
+                    question_board_queryset = question_board_queryset.filter(
+                        classroom=classroom)
 
-                test_board_serializer = TestBoardSerializer(test_board_queryset, many=True)
-                lecture_note_board_serializer = LectureNoteBoardSerializer(lecture_note_board_queryset, many=True)
-                question_board_serializer = QuestionBoardSerializer(question_board_queryset, many=True)
+                test_board_serializer = TestBoardSerializer(
+                    test_board_queryset, many=True)
+                lecture_note_board_serializer = LectureNoteBoardSerializer(
+                    lecture_note_board_queryset, many=True)
+                question_board_serializer = QuestionBoardSerializer(
+                    question_board_queryset, many=True)
 
                 context = {
                     "test_board": test_board_serializer.data,
@@ -324,10 +331,10 @@ class AllBoardByClassView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /Classroom 클래스룸
+# /Classroom 클래스룸
 
 
-### Subscription 구독정보
+# Subscription 구독정보
 class SubscriptionView(APIView):
     def get(self, request, pk):
         try:
@@ -411,10 +418,10 @@ class SubscriptionByUserView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /Subscription 구독정보
+# /Subscription 구독정보
 
 
-### TestBoard 문제게시판
+# TestBoard 문제게시판
 class TestBoardView(APIView):
     @extend_schema(
         summary="문제 게시판 조회",
@@ -540,25 +547,25 @@ class TestBoardByClassView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /TestBoard 문제게시판
+# /TestBoard 문제게시판
 
 
-### Test 문제게시글
+# Test 문제게시글
 class TestView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="문제 게시글 조회",
         description="임시",
         tags=["Classroom-Test"],
         responses=TestSerializer,
     )
-
-    paginator = PostPagination()
-
     def get(self, request):
         try:
             queryset = Test.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = TestSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -664,48 +671,50 @@ class TestDetailView(APIView):
 
 
 class TestByBoardView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="게시판별 게시글 조회",
         description="임시",
         tags=["Classroom-Test"],
         responses=TestSerializer,
     )
-
-    paginator = PostPagination()
-
     def get(self, request, pk):
         try:
             queryset = Test.objects.filter(board=pk)
             if request.user.is_authenticated:
                 if request.user.is_authenticated:
-                    result_page = self.paginator.paginate_queryset(queryset, request)
+                    result_page = self.paginator.paginate_queryset(
+                        queryset, request)
                     serializer = TestSerializer(result_page, many=True)
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /Test 문제게시글
+# /Test 문제게시글
 
-## classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
-## ==================================================================================
+# classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
+# ==================================================================================
 
-### TestComment 문제댓글
+# TestComment 문제댓글
+
+
 class TestCommentView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="문제 게시글 댓글 조회",
         description="임시",
         tags=["Classroom-Test"],
         responses=ClassroomSerializer,
     )
-
-    paginator = CommentPagination()
-
     def get(self, request):
         try:
             queryset = TestComment.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = TestCommentSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -803,28 +812,29 @@ class TestCommentDetailView(APIView):
 
 
 class TestCommentByPostView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="게시글별 댓글 조회",
         description="임시",
         tags=["Classroom-Test"],
         responses=TestCommentSerializer,
     )
-    paginator = CommentPagination()
-
     def get(self, request, pk):
         try:
             queryset = TestComment.objects.filter(test=pk)
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = TestCommentSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /TestComment 문제댓글
+# /TestComment 문제댓글
 
 
-### LectureNoteBoard 강의자료게시판
+# LectureNoteBoard 강의자료게시판
 class LectureNoteBoardView(APIView):
     @extend_schema(
         summary="강의자료 게시판 전체 조회",
@@ -953,24 +963,25 @@ class LectureNoteBoardByClassView(APIView):
             return Response({"error": "LectureNoteBoard not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /LectureNoteBoard 강의자료게시판
+# /LectureNoteBoard 강의자료게시판
 
 
-### LectureNote 강의자료게시글
+# LectureNote 강의자료게시글
 class LectureNoteView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="강의자료 게시글 전체 조회",
         description="임시",
         tags=["Classroom-LectureNote"],
         responses=LectureNoteSerializer,
     )
-    paginator = PostPagination()
-
     def get(self, request):
         try:
             queryset = LectureNote.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = LectureNoteSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -1074,43 +1085,46 @@ class LectureNoteDetailView(APIView):
 
 
 class LectureNoteByBoardView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="게시판별 게시글 조회",
         description="임시",
         tags=["Classroom-LectureNote"],
         responses=LectureNoteSerializer,
     )
-    paginator = PostPagination()
-
     def get(self, request, pk):
         try:
             queryset = LectureNote.objects.filter(board=pk)
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = LectureNoteSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /LectureNote 강의자료게시글
+# /LectureNote 강의자료게시글
 
 
-### LectureNoteComment 강의자료댓글
+# LectureNoteComment 강의자료댓글
 class LectureNoteCommentView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="강의자료 게시글 댓글 조회",
         description="임시",
         tags=["Classroom-LectureNote"],
         responses=LectureNoteCommentSerializer,
     )
-    paginator = CommentPagination()
-
     def get(self, request):
         try:
             queryset = LectureNoteComment.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = LectureNoteCommentSerializer(result_page, many=True)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
+                serializer = LectureNoteCommentSerializer(
+                    result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -1176,7 +1190,8 @@ class LectureNoteCommentDetailView(APIView):
                     'lecture_note': queryset.lecture_note.pk,
                     'content': request.data['content']
                 }
-                serializer = LectureNoteCommentSerializer(queryset, data=context)
+                serializer = LectureNoteCommentSerializer(
+                    queryset, data=context)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data)
@@ -1207,28 +1222,30 @@ class LectureNoteCommentDetailView(APIView):
 
 
 class LectureNoteCommentByPostView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="강의자료 게시글별 댓글 조회",
         description="임시",
         tags=["Classroom-LectureNote"],
         responses=LectureNoteCommentSerializer,
     )
-    paginator = CommentPagination()
-
     def get(self, request, pk):
         try:
             queryset = LectureNoteComment.objects.filter(lecture_note=pk)
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = LectureNoteCommentSerializer(result_page, many=True)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
+                serializer = LectureNoteCommentSerializer(
+                    result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /LectureNoteComment 강의자료댓글
+# /LectureNoteComment 강의자료댓글
 
 
-### QuestionBoard 질문게시판
+# QuestionBoard 질문게시판
 class QuestionBoardView(APIView):
     @extend_schema(
         summary="질문 게시판 전체 조회",
@@ -1354,24 +1371,25 @@ class QuestionBoardByClassView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /QuestionBoard 질문게시판
+# /QuestionBoard 질문게시판
 
 
-### Question 질문게시글
+# Question 질문게시글
 class QuestionView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="질문 게시글 전체 조회",
         description="임시",
         tags=["Classroom-Question"],
         responses=QuestionSerializer,
     )
-    paginator = PostPagination()
-
     def get(self, request):
         try:
             queryset = Question.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = QuestionSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -1466,42 +1484,44 @@ class QuestionDetailView(APIView):
 
 
 class QuestionByBoardView(APIView):
+    paginator = PostPagination()
+
     @extend_schema(
         summary="게시판별 게시글 조회",
         description="임시",
         tags=["Classroom-Question"],
         responses=QuestionSerializer,
     )
-    paginator = PostPagination()
-
     def get(self, request, pk):
         try:
             queryset = Question.objects.filter(board=pk)
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = QuestionSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /Question 질문게시글
+# /Question 질문게시글
 
 
-### Comment 댓글
+# Comment 댓글
 class QuestionCommentView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="질문 게시글 댓글 조회",
         description="임시",
         tags=["Classroom-Question"],
         responses=QuestionCommentSerializer,
     )
-    paginator = CommentPagination()
-
     def get(self, request):
         try:
             queryset = QuestionComment.objects.all()
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = QuestionCommentSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -1599,42 +1619,44 @@ class QuestionCommentDetailView(APIView):
 
 
 class QuestionCommentByPostView(APIView):
+    paginator = CommentPagination()
+
     @extend_schema(
         summary="게시글별 댓글 조회",
         description="임시",
         tags=["Classroom-Question"],
         responses=QuestionCommentSerializer,
     )
-    paginator = CommentPagination()
-
     def get(self, request, pk):
         try:
             queryset = QuestionComment.objects.filter(question=pk)
             if request.user.is_authenticated:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = QuestionCommentSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /Comment 댓글
+# /Comment 댓글
 
 
-### TestSubmit 문제 답변
+# TestSubmit 문제 답변
 class TestSubmitView(APIView):
+    paginator = TestSubmitPagination()
+
     @extend_schema(
         summary="문제 답변 조회",
         description="임시",
         tags=["Classroom-TestSubmit"],
         responses=TestSubmitSerializer,
     )
-    paginator = TestSubmitPagination()
-
     def get(self, request):
         try:
             queryset = TestSubmit.objects.all()
             if request.user.is_authenticated and request.user.is_teacher:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = TestSubmitSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -1759,19 +1781,20 @@ class TestSubmitDetailView(APIView):
 
 
 class TestSubmitByTestView(APIView):
+    paginator = TestSubmitPagination()
+
     @extend_schema(
         summary="문제별 답변 조회",
         description="임시",
         tags=["Classroom-TestSubmit"],
         responses=TestSubmitSerializer,
     )
-    paginator = TestSubmitPagination()
-
     def get(self, request, pk):
         try:
             queryset = TestSubmit.objects.filter(test=pk)
             if request.user.is_authenticated and request.user.is_teacher:
-                result_page = self.paginator.paginate_queryset(queryset, request)
+                result_page = self.paginator.paginate_queryset(
+                    queryset, request)
                 serializer = TestSubmitSerializer(result_page, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
@@ -1795,4 +1818,4 @@ class TestSubmitByTestUserView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-### /TestSubmit 문제 답변
+# /TestSubmit 문제 답변
