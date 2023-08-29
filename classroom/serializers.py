@@ -2,8 +2,12 @@ from rest_framework import serializers
 from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
     Question, QuestionBoard, QuestionComment, TestSubmit, Subscription
 
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema_field, OpenApiTypes
 
 class ClassroomSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%Y-%m-%dT%H:%M:%S')  # 초단위를 포함하지 않도록 형식 지정
+    updated_at = serializers.DateTimeField(format='%Y-%m-%dT%H:%M:%S')  # 초단위를 포함하지 않도록 형식 지정
+
     class Meta:
         model = Classroom
         fields = '__all__'

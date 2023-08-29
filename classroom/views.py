@@ -1,7 +1,9 @@
+from django.http import HttpRequest, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
+
 from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
     Question, QuestionBoard, QuestionComment, TestSubmit, Subscription
 from .serializers import ClassroomSerializer, TestSerializer, TestBoardSerializer, TestCommentSerializer, \
@@ -28,9 +30,125 @@ class TestSubmitPagination(PageNumberPagination):
     page_size = 5
     page_query_param = 'page'
 
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema, OpenApiTypes
+from rest_framework.decorators import action
+
+###################
+# schema-option 정리
+# responses=ClassroomSerializer,
+# methods=["GET", "POST", "DELETE", "PUT", "PATCH"],
+# auth=["string"],
+# operation_id: Optional[str] = None,
+# parameters: Optional[List[Union[OpenApiParameter, _SerializerType]]] = None,
+# request: Any = empty,
+# auth: Optional[List[str]] = None,
+# deprecated: Optional[bool] = None,
+# exclude: bool = False,
+# operation: Optional[Dict] = None,
+# methods: Optional[List[str]] = None,
+# versions: Optional[List[str]] = None,
+# examples: Optional[List[OpenApiExample]] = None,
+
+# operation_id : 자동으로 설정되는 id 값, 대체로 수동할당하여 쓰진 않음
+# parameters : 해당 path로 받기로 예상된 파라미터 값 (Serializer or OpenApiParameter 사용)
+# request : 요청시 전달될 content의 형태
+# responses : 응답시 전달될 content의 형태
+# auth : 해당 method에 접근하기 위한 인증방법
+# description: 해당 method 설명
+# summary : 해당 method 요약
+# deprecated : 해당 method 사용여부 
+# tags : 문서상 보여줄 묶음의 단위
+# exclude : 문서에서 제외여부  
+# operation : ??? json -> yaml 하기위한 dictionary??? 
+# methods : 요청 받을 Http method 목록
+# versions : 문서화 할때 사용할 openAPI 버전
+# examples : 요청/응답에 대한 예시
+####################
 
 ### Classroom 클래스룸
 class ClassroomView(APIView):
+    @extend_schema(
+        summary="클래스 목록 조회", # summary : 해당 method 요약
+        description="클래스 목록 조회", # description: 해당 method 설명
+        tags=["Classroom"], # tags : 문서상 보여줄 묶음의 단위
+        responses=ClassroomSerializer,
+        examples=[
+            OpenApiExample(
+                response_only=True,
+                summary="summary example",
+                name="success_example",
+                value={
+                    "id": 1,
+                    "created_at": "2023-08-24T10:01:38",
+                    "updated_at": "2023-08-28T10:01:28",
+                    "class_name": "class500",
+                    "class_info": "info500",
+                    "tag": [
+                    "#500"
+                    ]
+                },
+            ),
+        ],
+
+        # parameters=[
+        #     OpenApiParameter(
+        #         name="path_parameter",
+        #         type=str,
+        #         location=OpenApiParameter.PATH,
+        #         description="아이디 입니다.",
+        #         required=True,
+        #     ),
+        #     OpenApiParameter(
+        #         name="text_parameter",
+        #         type=str,
+        #         description="text_param 입니다.",
+        #         required=False,
+        #     ),
+        #     OpenApiParameter(
+        #         name="select_parameter",
+        #         type=str,
+        #         description="first_param 입니다.",
+				
+        #         #enum : 받을 수 있는 값을 제한함
+        #         enum=['선택1', '선택2', '선택3'], 
+        #         examples=[
+        #             OpenApiExample(
+        #                 name="Select Parameter Example",
+        #                 summary="요약1",
+        #                 description="설명글은 길게 작성합니다",
+        #                 value="선택1",
+        #             ),
+        #             OpenApiExample(
+        #                 "Select Parameter Example2",
+        #                 summary="요약2",
+        #                 description="두번째 설명글은 더 길게 작성합니다",
+        #                 value="선택4",
+        #             ),
+        #         ],
+        #     ),
+        #     OpenApiParameter(
+        #         name="date_parameter",
+        #         type=OpenApiTypes.DATE,
+        #         location=OpenApiParameter.QUERY,
+        #         description="date filter",
+        #         examples=[
+        #             OpenApiExample(
+        #                 name="이것은 Query Parameter Example입니다.",
+        #                 summary="요약입니다",
+        #                 description="설명글은 길게 작성합니다",
+        #                 value="1991-03-02",
+        #             ),
+        #             OpenApiExample(
+        #                 name="이것은 Query Parameter Example2입니다.",
+        #                 summary="두번째 요약입니다",
+        #                 description="두번째 설명글은 더 길게 작성합니다",
+        #                 value="1993-08-30",
+        #             ),
+        #         ],
+        #     ),
+        # ],
+    )
+
     paginator = ClassroomPagination()
 
     def get(self, request):
@@ -42,6 +160,13 @@ class ClassroomView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="클래스 생성",
+        description="클래스 생성",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request):
         if request.user.is_authenticated and request.user.is_teacher:
             context = {
@@ -62,6 +187,12 @@ class ClassroomView(APIView):
 
 
 class ClassroomDetailView(APIView):
+    @extend_schema(
+        summary="클래스 상세 조회",
+        description="클래스 상세 조회",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -72,6 +203,13 @@ class ClassroomDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=ClassroomSerializer,
+        summary="클래스 수정",
+        description="클래스 수정",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -93,6 +231,12 @@ class ClassroomDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="클래스 삭제",
+        description="클래스 삭제",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Classroom.objects.get(pk=pk)
@@ -107,6 +251,12 @@ class ClassroomDetailView(APIView):
 
 
 class ClassroomTagView(APIView):
+    @extend_schema(
+        summary="태그별 클래스 조회",
+        description="태그별 클래스 조회",
+        tags=["Classroom-Tag"],
+        responses=ClassroomSerializer,
+    )
     paginator = ClassroomPagination()
 
     def get(self, request):
@@ -123,6 +273,12 @@ class ClassroomTagView(APIView):
 
 
 class ClassroomByTeacherView(APIView):
+    @extend_schema(
+        summary="교사별 클래스 조회",
+        description="교사별 클래스 조회",
+        tags=["Classroom"],
+        responses=ClassroomSerializer,
+    )
     paginator = ClassroomPagination()
 
     def get(self, request, pk):
@@ -136,6 +292,12 @@ class ClassroomByTeacherView(APIView):
 
 
 class AllBoardByClassView(APIView):
+    @extend_schema(
+        summary="특정 클래스의 모든 게시판 조회",
+        description="특정 클래스의 모든 게시판 조회",
+        tags=["Classroom-Board"],
+        responses=ClassroomSerializer,
+    )
     def get(self, request):
         try:
             if request.user.is_authenticated:
@@ -254,6 +416,12 @@ class SubscriptionByUserView(APIView):
 
 ### TestBoard 문제게시판
 class TestBoardView(APIView):
+    @extend_schema(
+        summary="문제 게시판 조회",
+        description="문제 게시판 조회",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def get(self, request):
         try:
             queryset = TestBoard.objects.all()
@@ -264,6 +432,13 @@ class TestBoardView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=TestBoardSerializer,
+        summary="문제 게시판 생성",
+        description="문제 게시판 생성",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated and request.user.is_teacher:
@@ -284,6 +459,12 @@ class TestBoardView(APIView):
 
 
 class TestBoardDetailView(APIView):
+    @extend_schema(
+        summary="문제 게시판 조회",
+        description="",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -296,6 +477,13 @@ class TestBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=TestBoardSerializer,
+        summary="문제 게시판 생성",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -317,6 +505,12 @@ class TestBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="문제 게시판 삭제",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = TestBoard.objects.get(pk=pk)
@@ -331,6 +525,12 @@ class TestBoardDetailView(APIView):
 
 
 class TestBoardByClassView(APIView):
+    @extend_schema(
+        summary="클래스별 게시판 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestBoard.objects.filter(classroom=pk)
@@ -345,6 +545,13 @@ class TestBoardByClassView(APIView):
 
 ### Test 문제게시글
 class TestView(APIView):
+    @extend_schema(
+        summary="문제 게시글 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
+
     paginator = PostPagination()
 
     def get(self, request):
@@ -358,6 +565,13 @@ class TestView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=TestSerializer,
+        summary="문제 게시글 생성",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -380,6 +594,12 @@ class TestView(APIView):
 
 
 class TestDetailView(APIView):
+    @extend_schema(
+        summary="문제 게시글 상세 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -392,6 +612,13 @@ class TestDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=TestSerializer,
+        summary="문제 게시글 생성",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -415,6 +642,12 @@ class TestDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="문제 게시글 삭제",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Test.objects.get(pk=pk)
@@ -431,6 +664,13 @@ class TestDetailView(APIView):
 
 
 class TestByBoardView(APIView):
+    @extend_schema(
+        summary="게시판별 게시글 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestSerializer,
+    )
+
     paginator = PostPagination()
 
     def get(self, request, pk):
@@ -447,9 +687,18 @@ class TestByBoardView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 ### /Test 문제게시글
 
+## classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
+## ==================================================================================
 
 ### TestComment 문제댓글
 class TestCommentView(APIView):
+    @extend_schema(
+        summary="문제 게시글 댓글 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=ClassroomSerializer,
+    )
+
     paginator = CommentPagination()
 
     def get(self, request):
@@ -463,6 +712,13 @@ class TestCommentView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        request=TestCommentSerializer,
+        responses=TestCommentSerializer,
+        summary="문제 게시글 댓글 작성",
+        description="임시",
+        tags=["Classroom-Test"],
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -482,6 +738,12 @@ class TestCommentView(APIView):
 
 
 class TestCommentDetailView(APIView):
+    @extend_schema(
+        summary="문제 게시글 댓글 상세 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestCommentSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestComment.objects.get(pk=pk)
@@ -494,6 +756,13 @@ class TestCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="문제 게시글 댓글 수정",
+        description="임시",
+        tags=["Classroom-Test"],
+        request=TestCommentSerializer,
+        responses=TestCommentSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = TestComment.objects.get(pk=pk)
@@ -514,6 +783,12 @@ class TestCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="문제 게시글 댓글 삭제",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestCommentSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = TestComment.objects.get(pk=pk)
@@ -528,6 +803,12 @@ class TestCommentDetailView(APIView):
 
 
 class TestCommentByPostView(APIView):
+    @extend_schema(
+        summary="게시글별 댓글 조회",
+        description="임시",
+        tags=["Classroom-Test"],
+        responses=TestCommentSerializer,
+    )
     paginator = CommentPagination()
 
     def get(self, request, pk):
@@ -545,6 +826,12 @@ class TestCommentByPostView(APIView):
 
 ### LectureNoteBoard 강의자료게시판
 class LectureNoteBoardView(APIView):
+    @extend_schema(
+        summary="강의자료 게시판 전체 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteBoardSerializer,
+    )
     def get(self, request):
         try:
             queryset = LectureNoteBoard.objects.all()
@@ -555,6 +842,13 @@ class LectureNoteBoardView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시판 생성",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteBoardSerializer,
+        responses=LectureNoteBoardSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated and request.user.is_teacher:
@@ -575,6 +869,12 @@ class LectureNoteBoardView(APIView):
 
 
 class LectureNoteBoardDetailView(APIView):
+    @extend_schema(
+        summary="강의자료 게시판 상세 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = LectureNoteBoard.objects.get(pk=pk)
@@ -587,6 +887,13 @@ class LectureNoteBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시판 생성",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteBoardSerializer,
+        responses=LectureNoteBoardSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = LectureNoteBoard.objects.get(pk=pk)
@@ -608,6 +915,12 @@ class LectureNoteBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시판 삭제",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteBoardSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = LectureNoteBoard.objects.get(pk=pk)
@@ -622,6 +935,13 @@ class LectureNoteBoardDetailView(APIView):
 
 
 class LectureNoteBoardByClassView(APIView):
+    @extend_schema(
+        summary="클래스별 게시판 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteBoardSerializer,
+        responses=LectureNoteBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = LectureNoteBoard.objects.filter(classroom=pk)
@@ -638,6 +958,12 @@ class LectureNoteBoardByClassView(APIView):
 
 ### LectureNote 강의자료게시글
 class LectureNoteView(APIView):
+    @extend_schema(
+        summary="강의자료 게시글 전체 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteSerializer,
+    )
     paginator = PostPagination()
 
     def get(self, request):
@@ -651,6 +977,13 @@ class LectureNoteView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 생성",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteSerializer,
+        responses=LectureNoteSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -673,6 +1006,12 @@ class LectureNoteView(APIView):
 
 
 class LectureNoteDetailView(APIView):
+    @extend_schema(
+        summary="강의자료 게시글 상세 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = LectureNote.objects.get(pk=pk)
@@ -685,6 +1024,13 @@ class LectureNoteDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 생성",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteSerializer,
+        responses=LectureNoteSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = LectureNote.objects.get(pk=pk)
@@ -708,6 +1054,12 @@ class LectureNoteDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 삭제",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = LectureNote.objects.get(pk=pk)
@@ -722,6 +1074,12 @@ class LectureNoteDetailView(APIView):
 
 
 class LectureNoteByBoardView(APIView):
+    @extend_schema(
+        summary="게시판별 게시글 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteSerializer,
+    )
     paginator = PostPagination()
 
     def get(self, request, pk):
@@ -739,6 +1097,12 @@ class LectureNoteByBoardView(APIView):
 
 ### LectureNoteComment 강의자료댓글
 class LectureNoteCommentView(APIView):
+    @extend_schema(
+        summary="강의자료 게시글 댓글 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteCommentSerializer,
+    )
     paginator = CommentPagination()
 
     def get(self, request):
@@ -752,6 +1116,13 @@ class LectureNoteCommentView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 댓글 작성",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteCommentSerializer,
+        responses=LectureNoteCommentSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -771,6 +1142,12 @@ class LectureNoteCommentView(APIView):
 
 
 class LectureNoteCommentDetailView(APIView):
+    @extend_schema(
+        summary="강의자료 게시글 댓글 상세 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteCommentSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
@@ -783,6 +1160,13 @@ class LectureNoteCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 댓글 수정",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        request=LectureNoteCommentSerializer,
+        responses=LectureNoteCommentSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
@@ -803,6 +1187,12 @@ class LectureNoteCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="강의자료 게시글 댓글 삭제",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteCommentSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
@@ -817,6 +1207,12 @@ class LectureNoteCommentDetailView(APIView):
 
 
 class LectureNoteCommentByPostView(APIView):
+    @extend_schema(
+        summary="강의자료 게시글별 댓글 조회",
+        description="임시",
+        tags=["Classroom-LectureNote"],
+        responses=LectureNoteCommentSerializer,
+    )
     paginator = CommentPagination()
 
     def get(self, request, pk):
@@ -834,6 +1230,12 @@ class LectureNoteCommentByPostView(APIView):
 
 ### QuestionBoard 질문게시판
 class QuestionBoardView(APIView):
+    @extend_schema(
+        summary="질문 게시판 전체 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionBoardSerializer,
+    )
     def get(self, request):
         try:
             queryset = QuestionBoard.objects.all()
@@ -844,6 +1246,13 @@ class QuestionBoardView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시판 생성",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionBoardSerializer,
+        responses=QuestionBoardSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated and request.user.is_teacher:
@@ -864,6 +1273,12 @@ class QuestionBoardView(APIView):
 
 
 class QuestionBoardDetailView(APIView):
+    @extend_schema(
+        summary="질문 게시판 상세 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = QuestionBoard.objects.get(pk=pk)
@@ -876,6 +1291,13 @@ class QuestionBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시판 수정",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionBoardSerializer,
+        responses=QuestionBoardSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = QuestionBoard.objects.get(pk=pk)
@@ -897,6 +1319,12 @@ class QuestionBoardDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시판 삭제",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionBoardSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = QuestionBoard.objects.get(pk=pk)
@@ -911,6 +1339,12 @@ class QuestionBoardDetailView(APIView):
 
 
 class QuestionBoardByClassView(APIView):
+    @extend_schema(
+        summary="클래스별 게시판 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionBoardSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = QuestionBoard.objects.filter(classroom=pk)
@@ -925,6 +1359,12 @@ class QuestionBoardByClassView(APIView):
 
 ### Question 질문게시글
 class QuestionView(APIView):
+    @extend_schema(
+        summary="질문 게시글 전체 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionSerializer,
+    )
     paginator = PostPagination()
 
     def get(self, request):
@@ -938,6 +1378,13 @@ class QuestionView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 생성",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionSerializer,
+        responses=QuestionSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -952,6 +1399,12 @@ class QuestionView(APIView):
 
 
 class QuestionDetailView(APIView):
+    @extend_schema(
+        summary="질문 게시글 상세 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Question.objects.get(pk=pk)
@@ -964,6 +1417,13 @@ class QuestionDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 수정",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionSerializer,
+        responses=QuestionSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Question.objects.get(pk=pk)
@@ -986,6 +1446,12 @@ class QuestionDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 삭제",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Question.objects.get(pk=pk)
@@ -1000,6 +1466,12 @@ class QuestionDetailView(APIView):
 
 
 class QuestionByBoardView(APIView):
+    @extend_schema(
+        summary="게시판별 게시글 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionSerializer,
+    )
     paginator = PostPagination()
 
     def get(self, request, pk):
@@ -1017,6 +1489,12 @@ class QuestionByBoardView(APIView):
 
 ### Comment 댓글
 class QuestionCommentView(APIView):
+    @extend_schema(
+        summary="질문 게시글 댓글 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionCommentSerializer,
+    )
     paginator = CommentPagination()
 
     def get(self, request):
@@ -1030,6 +1508,13 @@ class QuestionCommentView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 댓글 작성",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionCommentSerializer,
+        responses=QuestionCommentSerializer,
+    )
     def post(self, request):
         try:
             if request.user.is_authenticated:
@@ -1049,6 +1534,12 @@ class QuestionCommentView(APIView):
 
 
 class QuestionCommentDetailView(APIView):
+    @extend_schema(
+        summary="질문 게시글 댓글 상세 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionCommentSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = QuestionComment.objects.get(pk=pk)
@@ -1061,6 +1552,13 @@ class QuestionCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 댓글 수정",
+        description="임시",
+        tags=["Classroom-Question"],
+        request=QuestionCommentSerializer,
+        responses=QuestionCommentSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = QuestionComment.objects.get(pk=pk)
@@ -1081,6 +1579,12 @@ class QuestionCommentDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="질문 게시글 댓글 삭제",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionCommentSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = QuestionComment.objects.get(pk=pk)
@@ -1095,6 +1599,12 @@ class QuestionCommentDetailView(APIView):
 
 
 class QuestionCommentByPostView(APIView):
+    @extend_schema(
+        summary="게시글별 댓글 조회",
+        description="임시",
+        tags=["Classroom-Question"],
+        responses=QuestionCommentSerializer,
+    )
     paginator = CommentPagination()
 
     def get(self, request, pk):
@@ -1112,6 +1622,12 @@ class QuestionCommentByPostView(APIView):
 
 ### TestSubmit 문제 답변
 class TestSubmitView(APIView):
+    @extend_schema(
+        summary="문제 답변 조회",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
     paginator = TestSubmitPagination()
 
     def get(self, request):
@@ -1125,6 +1641,13 @@ class TestSubmitView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="문제 답변 제출",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        request=TestSubmitSerializer,
+        responses=TestSubmitSerializer,
+    )
     def post(self, request):
         try:
             test_pk = request.data['test']
@@ -1156,6 +1679,12 @@ class TestSubmitView(APIView):
 
 
 class TestSubmitDetailView(APIView):
+    @extend_schema(
+        summary="제출한 문제 답변 상세 조회",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = TestSubmit.objects.get(pk=pk)
@@ -1168,6 +1697,13 @@ class TestSubmitDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="제출한 문제 답변 수정",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        request=TestSubmitSerializer,
+        responses=TestSubmitSerializer,
+    )
     def post(self, request, pk):
         try:
             test_obj = Test.objects.get(pk=pk)
@@ -1203,6 +1739,12 @@ class TestSubmitDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="제출한 문제 답변 삭제",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = TestSubmit.objects.get(pk=pk)
@@ -1217,6 +1759,12 @@ class TestSubmitDetailView(APIView):
 
 
 class TestSubmitByTestView(APIView):
+    @extend_schema(
+        summary="문제별 답변 조회",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
     paginator = TestSubmitPagination()
 
     def get(self, request, pk):
@@ -1232,6 +1780,12 @@ class TestSubmitByTestView(APIView):
 
 
 class TestSubmitByTestUserView(APIView):
+    @extend_schema(
+        summary="임시",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
     def get(self, request, test_pk, user_pk):
         try:
             queryset = TestSubmit.objects.filter(test=test_pk, user=user_pk)

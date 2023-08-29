@@ -15,6 +15,7 @@ import environ
 from datetime import timedelta
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -69,8 +70,46 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    
+    # For drf-spectacular
+    'drf_spectacular',
 ]
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'drf-spectacular API Document',
+    'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다. 관리자 계정만 접근 가능합니다.',
+    'CONTACT': {'name': 'DeveLearn', 'url': 'https://github.com/DevelOrm/DeveLearn.git'},
+    'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
+    'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_spectacular.contrib.django_rest_framework.AutoSchema',
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication'
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    "SWAGGER_UI_SETTINGS": {
+        # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)
+        'deepLinking': True,
+        # True 이면 SwaggerUI상 Authorize에 입력된 정보가 새로고침을 하더라도 초기화되지 않습니다.
+        'persistAuthorization': True,
+        # True이면 API의 urlId 값을 노출합니다. 대체로 DRF api name둘과 일치하기때문에 api를 찾을때 유용합니다.
+        'displayOperationId': True,
+        # True 이면 Swagger UI에서 'Filter by Tag' 검색이 가능합니다.
+        'filter': True,
+
+        'dom_id': '#swagger-ui',
+        'layout': 'BaseLayout',
+    },
+
+    'VERSION': '1.0.0',
+    # OAS3 Meta정보 API를 비노출 처리
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -226,10 +265,25 @@ ACCOUNT_LOGOUT_ON_GET = False # Post 요청 필요, True 비권장
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    )
+    ),
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 REST_AUTH = {
+    'USE_JWT': True, # Default True
+    'JWT_AUTH_HTTPONLY': True, # Default True
+    'JWT_AUTH_COOKIE_USE_CSRF' : True, # Default True
+    'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
+    'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
+    'LOGOUT_ON_PASSWORD_CHANGE' : True, # Default True
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=10),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+}
     'USE_JWT': True,
     'SESSION_LOGIN': False,
     'JWT_AUTH_HTTPONLY': False, # Default True
