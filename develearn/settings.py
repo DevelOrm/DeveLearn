@@ -15,6 +15,7 @@ import environ
 from datetime import timedelta
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,12 +76,20 @@ INSTALLED_APPS = [
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'drf-spectacular API Document',
-    'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다.',
-    'CONTACT': {'name': 'DeveLorm', 'url': 'https://github.com/DevelOrm/DeveLearn.git'},
-
+    'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다. 관리자 계정만 접근 가능합니다.',
+    'CONTACT': {'name': 'DeveLearn', 'url': 'https://github.com/DevelOrm/DeveLearn.git'},
     'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
     'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
     'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_spectacular.contrib.django_rest_framework.AutoSchema',
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication'
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 
     "SWAGGER_UI_SETTINGS": {
         # API를 클릭할때 마다 SwaggerUI의 url이 변경됩니다. (특정 API url 공유시 유용하기때문에 True설정을 사용합니다)
