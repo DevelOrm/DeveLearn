@@ -1,4 +1,5 @@
 import random
+from user.models import User
 
 class Nickname_generator():
     adjectives = [
@@ -36,3 +37,18 @@ class Nickname_generator():
         nickname = random_adjective + " " + random_animal + "#" + random_code
 
         return nickname
+
+def nickname_check(random_nickname):
+    queryset = User.objects.filter(nickname = random_nickname)
+    if random_nickname in queryset:
+        return False
+    else:
+        return True
+        
+def nickname_generate():
+    random_nickname = Nickname_generator.roll_the_dice()
+
+    if nickname_check(random_nickname):
+        return random_nickname
+    else: 
+        nickname_generate()
