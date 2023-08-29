@@ -66,8 +66,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # For JWT
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    
 ]
 
 MIDDLEWARE = [
@@ -197,28 +199,22 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         },
     },
-    'google': {
-        'APP': {
-            'client_id': env.str('GOOGLE_CLIENT_ID', default='',),
-            'secret': env.str('GOOGLE_SECRET_KEY', default='',),
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
-        'OAUTH_PKCE_ENABLED': True,
-    }
 }
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "user_id" # 소셜 로그인 USERNAME 필드 설정
-#ACCOUNT_AUTHENTICATION_METHOD = 'user_id' # 소셜 로그인 인증 설정
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = None # 'none'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "user_id" # 로그인 USERNAME 필드 설정
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='',)
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='',)
+EMAIL_USE_TLS = True 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" # 'none'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[DeveLearn]"
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = False # Post 요청 필요, True 비권장
@@ -241,12 +237,14 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
     'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
     'LOGOUT_ON_PASSWORD_CHANGE' : True,
+    'LOGIN_SERIALIZER' : 'user.serializers.UserLoginSerializer',
     'REGISTER_SERIALIZER': 'user.serializers.UserRegisterSerializer',
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=7),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+#     'ROTATE_REFRESH_TOKENS': True,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'UPDATE_LAST_LOGIN' : True,
+# }
