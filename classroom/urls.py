@@ -6,7 +6,8 @@ from .views import ClassroomView, ClassroomDetailView, ClassroomTagView, TestBoa
     LectureNoteCommentView, LectureNoteCommentDetailView, LectureNoteCommentByPostView, QuestionBoardView, \
     QuestionBoardDetailView, QuestionBoardByClassView, QuestionView, QuestionDetailView, QuestionByBoardView, \
     TestSubmitView, TestSubmitDetailView, TestSubmitByTestView, QuestionCommentView, QuestionCommentDetailView, \
-    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView, TestSubmitByTestUserView
+    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView, TestSubmitByTestUserView, SubscriptionView,\
+    SubscriptionDetailView, SubscriptionByUserView
 
 app_name = 'classroom'
 
@@ -22,6 +23,14 @@ urlpatterns = [
     path('<int:pk>/', ClassroomByTeacherView.as_view()),
     # 특정 클래스의 모든 게시판 조회
     path('board/', AllBoardByClassView.as_view()),
+
+    ## 구독 정보
+    # 구독 정보 조회 및 구독 정보 생성
+    path('<int:pk>/subscription/', SubscriptionView.as_view()),
+    # 구독 정보 상세 조회, 수정, 삭제
+    path('subscription/detail/<int:pk>/', SubscriptionDetailView.as_view()),
+    # 사용자별 구독 정보 조회
+    path('user-subscription/<int:pk>/', SubscriptionByUserView.as_view()),
 
     ## 문제 게시판
     # 문제 게시판 목록 조회 및 문제 게시판 생성
