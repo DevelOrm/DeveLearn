@@ -84,6 +84,8 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     # For drf-spectacular
     'drf_spectacular',
+    # For S3 bucket
+    'storages',
 ]
 
 SPECTACULAR_SETTINGS = {
@@ -301,3 +303,11 @@ REST_AUTH = {
 #     'BLACKLIST_AFTER_ROTATION': True,
 #     'UPDATE_LAST_LOGIN' : True,
 # }
+
+AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME", default="")
+AWS_S3_ACCESS_KEY_ID = env.str("AWS_S3_ACCESS_KEY_ID", default="")
+AWS_S3_SECRET_ACCESS_KEY = env.str("AWS_S3_SECRET_ACCESS_KEY", default="")
+AWS_S3_REGION_NAME = env.str("AWS_S3_REGION_NAME", default="ap-northeast-2")
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
