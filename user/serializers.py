@@ -6,8 +6,10 @@ from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from user.models import User
 from user.util import nickname_generate
+from drf_spectacular.utils import extend_schema
 
 import re
+
 
 class UserRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(allow_null=True)

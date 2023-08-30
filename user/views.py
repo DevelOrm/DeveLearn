@@ -21,14 +21,16 @@ from django.shortcuts import redirect
 
 from drf_spectacular.utils import extend_schema
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+
 class UserInfoView(APIView):
     @extend_schema(
-        summary="유저 목록 조회",
-        description="유저 목록 조회",
+        summary="유저 정보 조회",
+        description="유저 정보 조회",
         tags=["User"],
         responses=UserInfoSerializer,
     )
@@ -65,8 +67,8 @@ class UserInfoView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     @extend_schema(
-        summary="유저 정보 삭제",
-        description="유저 정보 삭제",
+        summary="유저 삭제",
+        description="유저 삭제",
         tags=["User"],
         request=UserInfoSerializer,
         responses=UserInfoSerializer,
@@ -84,8 +86,8 @@ class UserInfoView(APIView):
 
 class Duplication_Check(APIView):
     @extend_schema(
-        summary="유저 중복 조회",
-        description="유저 중복 조회",
+        summary="유저 필드 중복 체크",
+        description="유저 필드 중복 체크",
         tags=["User"],
         request=UserInfoSerializer,
         responses=UserInfoSerializer,
@@ -98,8 +100,8 @@ class Duplication_Check(APIView):
 
 class NaverLoginView(APIView):
     @extend_schema(
-        summary="네이버 소셜 로그인 조회",
-        description="네이버 소셜 로그인 조회",
+        summary="네이버 소셜 로그인 요청",
+        description="네이버 소셜 로그인 요청",
         tags=["User"],
     )
     def get(self, request):
@@ -109,8 +111,8 @@ class NaverLoginView(APIView):
     
 class NaverLoginCallbackView(APIView):
     @extend_schema(
-        summary="네이버 소셜 로그인",
-        description="네이버 소셜 로그인",
+        summary="네이버 소셜 로그인 콜백",
+        description="네이버 소셜 로그인 콜백",
         tags=["User"],
     )
     def get(self, request):
@@ -152,6 +154,12 @@ class NaverLoginCallbackView(APIView):
         user.save()
         return Response(accept.json(), status=status.HTTP_200_OK)
 
+
+@extend_schema(
+        summary="네이버 소셜 로그인 성공",
+        description="네이버 소셜 로그인 성공",
+        tags=["User"],
+    )
 class NaverLoginCompleteView(SocialLoginView):
     adapter_class = NaverOAuth2Adapter
     client_class = OAuth2Client
@@ -218,8 +226,8 @@ class NaverLoginCompleteView(SocialLoginView):
 
 class ConfirmEmailView(APIView):
     @extend_schema(
-        summary="인증 이메일 목록 조회",
-        description="인증 이메일 목록 조회",
+        summary="이메일 인증 확인",
+        description="이메일 인증 확인",
         tags=["User"],
     )
     def get(self, *args, **kwargs):
@@ -243,3 +251,5 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
+    
+
