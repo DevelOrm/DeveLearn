@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from .models import Classroom, Test, TestBoard, TestComment, LectureNote, LectureNoteBoard, LectureNoteComment, \
-    Question, QuestionBoard, QuestionComment, TestSubmit, Subscription
+from .models import Classroom, Test, Board, TestComment, LectureNote, LectureNoteComment, Question, QuestionComment, \
+    TestSubmit, Subscription
 
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view, extend_schema_field, OpenApiTypes
 
 class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,9 +9,9 @@ class ClassroomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestBoardSerializer(serializers.ModelSerializer):
+class BoardSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TestBoard
+        model = Board
         fields = '__all__'
 
 
@@ -28,12 +27,6 @@ class TestCommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LectureNoteBoardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LectureNoteBoard
-        fields = '__all__'
-
-
 class LectureNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LectureNote
@@ -43,12 +36,6 @@ class LectureNoteSerializer(serializers.ModelSerializer):
 class LectureNoteCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LectureNoteComment
-        fields = '__all__'
-
-
-class QuestionBoardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = QuestionBoard
         fields = '__all__'
 
 
