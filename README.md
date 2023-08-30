@@ -8,6 +8,7 @@
   - 팀명: DeveLorm
   - 주제(서비스명): 온라인 학습 플랫폼(DeveLearn)
     - 클래스를 운영하는 선생님과, 원하는 클래스를 수강하는 학생 간의 교육이 이루어지는 온라인 학습 플랫폼입니다.
+  - REPO 주소: https://github.com/DevelOrm/DeveLearn
 
 # Index
   1. DataBase Structure
