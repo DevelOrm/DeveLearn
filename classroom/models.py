@@ -36,10 +36,17 @@ class Subscription(models.Model):
 
 
 class Board(models.Model):
+    BOARD_TYPES = [
+        ('test', 'Test Board'),
+        ('lecture_note', 'LectureNote Board'),
+        ('question', 'Question Board')
+    ]
+
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()
+    board_type = models.CharField(max_length=20, choices=BOARD_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
