@@ -289,28 +289,6 @@ class ClassroomByTeacherView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class AllBoardByClassView(APIView):
-    @extend_schema(
-        summary="특정 클래스의 모든 게시판 조회",
-        description="특정 클래스의 모든 게시판 조회",
-        tags=["Classroom-Board"],
-        responses=ClassroomSerializer,
-    )
-    def get(self, request):
-        try:
-            if request.user.is_authenticated:
-                queryset = Board.objects.all()
-                classroom = request.GET.get('classroom', '')
-                if classroom:
-                    queryset = queryset.filter(classroom=classroom)
-                serializer = BoardSerializer(queryset, many=True)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Classroom 클래스룸
-
-
 # Subscription 구독정보
 class SubscriptionView(APIView):
     def get(self, request, pk):
@@ -430,7 +408,8 @@ class BoardView(APIView):
                     'user': request.user.pk,
                     'classroom': request.data['classroom'],
                     'title': request.data['title'],
-                    'content': request.data['content']
+                    'content': request.data['content'],
+                    'board_type': request.data['board_type']
                 }
                 serializer = BoardSerializer(data=context)
                 if serializer.is_valid():
@@ -476,7 +455,8 @@ class BoardDetailView(APIView):
                     'user': queryset.user.pk,
                     'classroom': queryset.classroom.pk,
                     'title': request.data['title'],
-                    'content': request.data['content']
+                    'content': request.data['content'],
+                    'board_type': request.data['board_type']
                 }
                 serializer = BoardSerializer(queryset, data=context)
                 if serializer.is_valid():
@@ -558,19 +538,23 @@ class TestView(APIView):
     def post(self, request):
         try:
             if request.user.is_authenticated:
-                context = {
-                    'user': request.user.pk,
-                    'board': request.data['board'],
-                    'title': request.data['title'],
-                    'content': request.data['content'],
-                    'solution': request.data['solution'],
-                    'auto_score': request.data['auto_score']
-                }
-                serializer = TestSerializer(data=context)
-                if serializer.is_valid():
-                    queryset = serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                board_pk = request.data['board']
+                board_queryset = Board.objects.get(pk=board_pk)
+                if board_queryset.board_type == "test":
+                    context = {
+                        'user': request.user.pk,
+                        'board': board_pk,
+                        'title': request.data['title'],
+                        'content': request.data['content'],
+                        'solution': request.data['solution'],
+                        'auto_score': request.data['auto_score']
+                    }
+                    serializer = TestSerializer(data=context)
+                    if serializer.is_valid():
+                        queryset = serializer.save()
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Select the correct board"}, status=status.HTTP_403_FORBIDDEN)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -672,9 +656,8 @@ class TestByBoardView(APIView):
 # classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
 # ==================================================================================
 
+
 # TestComment 문제댓글
-
-
 class TestCommentView(APIView):
     paginator = CommentPagination()
 
@@ -838,19 +821,23 @@ class LectureNoteView(APIView):
     def post(self, request):
         try:
             if request.user.is_authenticated:
-                context = {
-                    'user': request.user.pk,
-                    'board': request.data['board'],
-                    'title': request.data['title'],
-                    'content': request.data['content'],
-                    'upload_file': request.data['upload_file'],
-                    'upload_image': request.data['upload_image']
-                }
-                serializer = LectureNoteSerializer(data=context)
-                if serializer.is_valid():
-                    queryset = serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                board_pk = request.data['board']
+                board_queryset = Board.objects.get(pk=board_pk)
+                if board_queryset.board_type == "lecture_note":
+                    context = {
+                        'user': request.user.pk,
+                        'board': request.data['board'],
+                        'title': request.data['title'],
+                        'content': request.data['content'],
+                        'upload_file': request.data['file'],
+                        'upload_image': request.data['image']
+                    }
+                    serializer = LectureNoteSerializer(data=context)
+                    if serializer.is_valid():
+                        queryset = serializer.save()
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Select the correct board"}, status=status.HTTP_403_FORBIDDEN)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -891,8 +878,8 @@ class LectureNoteDetailView(APIView):
                     'board': queryset.board.pk,
                     'title': request.data['title'],
                     'content': request.data['content'],
-                    'upload_file': request.data['upload_file'],
-                    'upload_image': request.data['upload_image']
+                    'upload_file': request.data['file'],
+                    'upload_image': request.data['image']
                 }
                 serializer = LectureNoteSerializer(queryset, data=context)
                 if serializer.is_valid():
@@ -1081,6 +1068,7 @@ class LectureNoteCommentByPostView(APIView):
 
 # Question 질문게시글
 class QuestionView(APIView):
+
     paginator = PostPagination()
 
     @extend_schema(
@@ -1110,11 +1098,22 @@ class QuestionView(APIView):
     def post(self, request):
         try:
             if request.user.is_authenticated:
-                serializer = QuestionSerializer(data=request.data)
-                if serializer.is_valid():
-                    queryset = serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                board_pk = request.data['board']
+                board_queryset = Board.objects.get(pk=board_pk)
+                if board_queryset.board_type == "question":
+                    context = {
+                        'user': request.user.pk,
+                        'board': board_pk,
+                        'title': request.data['title'],
+                        'content': request.data['content'],
+                        'upload_image': request.data['upload_image']
+                    }
+                    serializer = QuestionSerializer(data=context)
+                    if serializer.is_valid():
+                        queryset = serializer.save()
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Select the correct board"}, status=status.HTTP_403_FORBIDDEN)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
