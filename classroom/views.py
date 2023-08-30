@@ -313,6 +313,12 @@ class AllBoardByClassView(APIView):
 
 # Subscription 구독정보
 class SubscriptionView(APIView):
+    @extend_schema(
+        summary="클래스 구독 정보 조회",
+        description="클래스 구독 정보 조회",
+        tags=["Classroom-Subscription"],
+        responses=SubscriptionSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Subscription.objects.filter(classroom=pk)
@@ -321,6 +327,13 @@ class SubscriptionView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="클래스 구독 정보 생성",
+        description="클래스 구독 정보 생성",
+        tags=["Classroom-Subscription"],
+        request=SubscriptionSerializer,    
+        responses=SubscriptionSerializer,
+    )
     def post(self, request, pk):
         try:
             if request.user.is_authenticated:
@@ -340,6 +353,12 @@ class SubscriptionView(APIView):
 
 
 class SubscriptionDetailView(APIView):
+    @extend_schema(
+        summary="클래스 구독 정보 상세 조회",
+        description="클래스 구독 정보 상세 조회",
+        tags=["Classroom-Subscription"],
+        responses=SubscriptionSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Subscription.objects.get(pk=pk)
@@ -352,6 +371,13 @@ class SubscriptionDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="클래스 구독 정보 수정",
+        description="클래스 구독 정보 수정",
+        tags=["Classroom-Subscription"],
+        request=SubscriptionSerializer,    
+        responses=SubscriptionSerializer,
+    )
     def post(self, request, pk):
         try:
             queryset = Subscription.objects.get(pk=pk)
@@ -372,6 +398,13 @@ class SubscriptionDetailView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="클래스 구독 정보 삭제",
+        description="클래스 구독 정보 삭제",
+        tags=["Classroom-Subscription"],
+        request=SubscriptionSerializer,    
+        responses=SubscriptionSerializer,
+    )
     def delete(self, request, pk):
         try:
             queryset = Subscription.objects.get(pk=pk)
@@ -386,6 +419,12 @@ class SubscriptionDetailView(APIView):
 
 
 class SubscriptionByUserView(APIView):
+    @extend_schema(
+        summary="사용자별 구독 정보 조회",
+        description="사용자별 구독 정보 조회",
+        tags=["Classroom-Subscription"],
+        responses=SubscriptionSerializer,
+    )
     def get(self, request, pk):
         try:
             queryset = Subscription.objects.filter(user=pk)

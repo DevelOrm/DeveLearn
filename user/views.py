@@ -19,11 +19,21 @@ import environ
 from pathlib import Path
 from django.shortcuts import redirect
 
+from drf_spectacular.utils import extend_schema
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+
 class UserInfoView(APIView):
+    @extend_schema(
+        summary="유저 정보 조회",
+        description="유저 정보 조회",
+        tags=["User"],
+        responses=UserInfoSerializer,
+    )
     def get(self, request):
         user = self.request.user
         if user == 'AnonymousUser':
@@ -35,6 +45,13 @@ class UserInfoView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+        summary="유저 정보 수정",
+        description="유저 정보 수정",
+        tags=["User"],
+        request=UserInfoSerializer,
+        responses=UserInfoSerializer,
+    )
     def patch(self, request):
         user = self.request.user
         if user == 'AnonymousUser':
@@ -49,6 +66,13 @@ class UserInfoView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+    @extend_schema(
+        summary="유저 삭제",
+        description="유저 삭제",
+        tags=["User"],
+        request=UserInfoSerializer,
+        responses=UserInfoSerializer,
+    )
     def delete(self, request):
         user = self.request.user
         if user == 'AnonymousUser':
@@ -61,6 +85,13 @@ class UserInfoView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Duplication_Check(APIView):
+    @extend_schema(
+        summary="유저 필드 중복 체크",
+        description="유저 필드 중복 체크",
+        tags=["User"],
+        request=UserInfoSerializer,
+        responses=UserInfoSerializer,
+    )
     def post(self, request):
         serializer = DuplicationCheckSerializer(data=request.data)
         if serializer.is_valid():
@@ -68,12 +99,22 @@ class Duplication_Check(APIView):
         return Response(serializer.errors, status=400)
 
 class NaverLoginView(APIView):
+    @extend_schema(
+        summary="네이버 소셜 로그인 요청",
+        description="네이버 소셜 로그인 요청",
+        tags=["User"],
+    )
     def get(self, request):
         client_id = env.str('NAVER_CLIENT_ID')
         callback = env.str('MAIN_DOMAIN') + 'user/social/naver/callback/'
         return redirect(f'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={client_id}&redirect_uri={callback}')
     
 class NaverLoginCallbackView(APIView):
+    @extend_schema(
+        summary="네이버 소셜 로그인 콜백",
+        description="네이버 소셜 로그인 콜백",
+        tags=["User"],
+    )
     def get(self, request):
         client_id = env.str('NAVER_CLIENT_ID')
         client_secret = env.str('NAVER_SECRET_KEY')
@@ -113,6 +154,12 @@ class NaverLoginCallbackView(APIView):
         user.save()
         return Response(accept.json(), status=status.HTTP_200_OK)
 
+
+@extend_schema(
+        summary="네이버 소셜 로그인 성공",
+        description="네이버 소셜 로그인 성공",
+        tags=["User"],
+    )
 class NaverLoginCompleteView(SocialLoginView):
     adapter_class = NaverOAuth2Adapter
     client_class = OAuth2Client
@@ -178,7 +225,11 @@ class NaverLoginCompleteView(SocialLoginView):
 
 
 class ConfirmEmailView(APIView):
-
+    @extend_schema(
+        summary="이메일 인증 확인",
+        description="이메일 인증 확인",
+        tags=["User"],
+    )
     def get(self, *args, **kwargs):
         self.object = confirmation = self.get_object()
         confirmation.confirm(self.request)
@@ -200,3 +251,5 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
+    
+
