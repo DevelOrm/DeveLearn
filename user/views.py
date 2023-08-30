@@ -221,7 +221,6 @@ class ConfirmEmailView(APIView):
         summary="인증 이메일 목록 조회",
         description="인증 이메일 목록 조회",
         tags=["User"],
-        responses=UserInfoSerializer,
     )
     def get(self, *args, **kwargs):
         self.object = confirmation = self.get_object()
