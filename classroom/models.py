@@ -35,7 +35,7 @@ class Subscription(models.Model):
         return f'{self.user}-{self.classroom}'
 
 
-class TestBoard(models.Model):
+class Board(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
@@ -51,7 +51,7 @@ class TestBoard(models.Model):
 
 
 class Test(models.Model):
-    board = models.ForeignKey(TestBoard, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()
@@ -67,23 +67,8 @@ class Test(models.Model):
         return f'{self.title}'
 
 
-class LectureNoteBoard(models.Model):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    title = models.CharField(max_length=50)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.title}'
-
-
 class LectureNote(models.Model):
-    board = models.ForeignKey(LectureNoteBoard, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()
@@ -99,23 +84,8 @@ class LectureNote(models.Model):
         return f'{self.title}'
 
 
-class QuestionBoard(models.Model):
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    title = models.CharField(max_length=50)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.title}'
-
-
 class Question(models.Model):
-    board = models.ForeignKey(QuestionBoard, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()

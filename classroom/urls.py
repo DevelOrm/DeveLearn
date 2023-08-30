@@ -1,13 +1,11 @@
 from django.urls import path
-from .views import ClassroomView, ClassroomDetailView, ClassroomTagView, TestBoardView, TestBoardDetailView, \
-    TestBoardByClassView, TestView, TestDetailView, TestByBoardView, TestCommentView, TestCommentDetailView, \
-    TestCommentByPostView, LectureNoteBoardView, LectureNoteBoardDetailView, \
-    LectureNoteBoardByClassView, LectureNoteView, LectureNoteDetailView, LectureNoteByBoardView, \
-    LectureNoteCommentView, LectureNoteCommentDetailView, LectureNoteCommentByPostView, QuestionBoardView, \
-    QuestionBoardDetailView, QuestionBoardByClassView, QuestionView, QuestionDetailView, QuestionByBoardView, \
-    TestSubmitView, TestSubmitDetailView, TestSubmitByTestView, QuestionCommentView, QuestionCommentDetailView, \
-    QuestionCommentByPostView, AllBoardByClassView, ClassroomByTeacherView, TestSubmitByTestUserView, SubscriptionView,\
-    SubscriptionDetailView, SubscriptionByUserView
+from .views import ClassroomView, ClassroomDetailView, ClassroomTagView, BoardView, BoardDetailView, \
+    BoardByClassView, TestView, TestDetailView, TestByBoardView, TestCommentView, TestCommentDetailView, \
+    TestCommentByPostView, LectureNoteView, LectureNoteDetailView, LectureNoteByBoardView, \
+    LectureNoteCommentView, LectureNoteCommentDetailView, LectureNoteCommentByPostView, QuestionView, \
+    QuestionDetailView, QuestionByBoardView, TestSubmitView, TestSubmitDetailView, TestSubmitByTestView, \
+    QuestionCommentView, QuestionCommentDetailView, QuestionCommentByPostView, AllBoardByClassView, \
+    ClassroomByTeacherView, TestSubmitByTestUserView, SubscriptionView, SubscriptionDetailView, SubscriptionByUserView
 
 app_name = 'classroom'
 
@@ -22,7 +20,7 @@ urlpatterns = [
     # 교사별 클래스 조회
     path('<int:pk>/', ClassroomByTeacherView.as_view()),
     # 특정 클래스의 모든 게시판 조회
-    path('board/', AllBoardByClassView.as_view()),
+    path('all-board/', AllBoardByClassView.as_view()),
 
     ## 구독 정보
     # 구독 정보 조회 및 구독 정보 생성
@@ -32,13 +30,13 @@ urlpatterns = [
     # 사용자별 구독 정보 조회
     path('user-subscription/<int:pk>/', SubscriptionByUserView.as_view()),
 
-    ## 문제 게시판
-    # 문제 게시판 목록 조회 및 문제 게시판 생성
-    path('test/', TestBoardView.as_view()),
-    # 문제 게시판 상세 조회, 수정, 삭제
-    path('test/detail/<int:pk>/', TestBoardDetailView.as_view()),
-    # 클래스별 문제 게시판 조회
-    path('test/<int:pk>/', TestBoardByClassView.as_view()),
+    ## 게시판
+    # 게시판 목록 조회 및 게시판 생성
+    path('board/', BoardView.as_view()),
+    # 게시판 상세 조회, 수정, 삭제
+    path('board/detail/<int:pk>/', BoardDetailView.as_view()),
+    # 클래스별 게시판 조회
+    path('board/<int:pk>/', BoardByClassView.as_view()),
 
     ## 문제 게시글
     # 문제 게시글 목록 조회 및 문제 게시판 생성
@@ -56,14 +54,6 @@ urlpatterns = [
     # 게시글별 댓글 조회
     path('test/comment/<int:pk>/', TestCommentByPostView.as_view()),
 
-    ## 강의자료 게시판
-    # 강의자료 게시판 목록 조회 및 강의자료 게시판 생성
-    path('lecturenote/', LectureNoteBoardView.as_view()),
-    # 강의자료 게시판 상세 조회, 수정, 삭제
-    path('lecturenote/detail/<int:pk>/', LectureNoteBoardDetailView.as_view()),
-    # 클래스별 강의자료 게시판 조회
-    path('lecturenote/<int:pk>/', LectureNoteBoardByClassView.as_view()),
-
     ## 강의자료 게시글
     # 강의자료 게시글 목록 조회 및 강의자료 게시글 생성
     path('lecturenote/post/', LectureNoteView.as_view()),
@@ -79,14 +69,6 @@ urlpatterns = [
     path('lecturenote/comment/detail/<int:pk>/', LectureNoteCommentDetailView.as_view()),
     # 게시글별 댓글 조회
     path('lecturenote/comment/<int:pk>/', LectureNoteCommentByPostView.as_view()),
-
-    ## 질문 게시판
-    # 질문 게시판 목록 조회 및 질문 게시판 생성
-    path('question/', QuestionBoardView.as_view()),
-    # 질문 게시판 상세 조회, 수정, 삭제
-    path('question/detail/<int:pk>/', QuestionBoardDetailView.as_view()),
-    # 클래스별 질문 게시판 조회
-    path('question/<int:pk>/', QuestionBoardByClassView.as_view()),
 
     ## 질문 게시글
     # 질문 게시글 목록 조회 및 질문 게시글 생성
