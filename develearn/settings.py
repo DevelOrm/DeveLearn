@@ -33,7 +33,7 @@ SECRET_KEY = env.str('SECRET_KEY', default='',)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -41,6 +41,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 # 	# 허용할 Origin 추가
 #     "http://127.0.0.1:9000"
 # ]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 # Application definition
@@ -78,7 +90,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'drf-spectacular API Document',
     'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다. 관리자 계정만 접근 가능합니다.',
     'CONTACT': {'name': 'DeveLearn', 'url': 'https://github.com/DevelOrm/DeveLearn.git'},
-    'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0', 
+    'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.44.0',
     'SWAGGER_UI_FAVICON_HREF': '//unpkg.com/swagger-ui-dist@3.44.0/favicon-32x32.png',
     'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_spectacular.contrib.django_rest_framework.AutoSchema',
 
@@ -127,7 +139,7 @@ ROOT_URLCONF = 'develearn.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        #'DIRS': [],
+        # 'DIRS': [],
         'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -187,7 +199,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-#LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'ko-kr'
 
 # TIME_ZONE = 'UTC'
@@ -240,23 +252,23 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "user_id" # 로그인 USERNAME 필드 설정
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "user_id"  # 로그인 USERNAME 필드 설정
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='',)
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='',)
-EMAIL_USE_TLS = True 
+EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory" # 'none'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # 'none'
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[DeveLearn]"
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_LOGOUT_ON_GET = False # Post 요청 필요, True 비권장
+ACCOUNT_LOGOUT_ON_GET = False  # Post 요청 필요, True 비권장
 
 # 로그인, 로그아웃 리다이렉트 - URL path name 작성
 # LOGIN_REDIRECT_URL = 'main'
@@ -273,12 +285,12 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     'USE_JWT': True,
     'SESSION_LOGIN': False,
-    'JWT_AUTH_HTTPONLY': False, # Default True
-    'JWT_AUTH_COOKIE_USE_CSRF' : True,
+    'JWT_AUTH_HTTPONLY': False,  # Default True
+    'JWT_AUTH_COOKIE_USE_CSRF': True,
     'JWT_AUTH_COOKIE': 'develearn-auth-cookie',
     'JWT_AUTH_REFRESH_COOKIE': 'develearn-refresh-token',
-    'LOGOUT_ON_PASSWORD_CHANGE' : True,
-    'LOGIN_SERIALIZER' : 'user.serializers.UserLoginSerializer',
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'LOGIN_SERIALIZER': 'user.serializers.UserLoginSerializer',
     'REGISTER_SERIALIZER': 'user.serializers.UserRegisterSerializer',
 }
 
