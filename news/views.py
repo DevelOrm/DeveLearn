@@ -83,9 +83,9 @@ class NewsSearchView(generics.ListAPIView):
         keyword = self.request.query_params.get('q')  # 브라우저에서 제공한 키워드
         if keyword:
             queryset = News.objects.filter(
-                title__icontains=keyword)[:100]  # 제목에 키워드를 포함하는 객체 검색
+                title__icontains=keyword).order_by('-written_at')[:100]  # 제목에 키워드를 포함하는 객체 검색
         else:
-            queryset = News.objects.all()[:100]
+            queryset = News.objects.all().order_by('-written_at')[:100]
         paginator = Paginator(queryset, 10)  # 10개씩 페이지 처리
         page = self.request.query_params.get('page', 1)
         results = paginator.get_page(page)
