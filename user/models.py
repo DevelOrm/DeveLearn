@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class UserManager(BaseUserManager):
-    def create_superuser(self, user_id, password, **extra_fields):
+    def create_superuser(self, user_id, password, phone_number, **extra_fields):
         user = self.model(
             user_id = user_id,
             nickname = '관리자',
+            email = 'develorm@gmail.com',
+            phone_number = phone_number,
             **extra_fields
         )
         user.is_admin = True
@@ -28,7 +30,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "user_id"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["phone_number"]
     
     def __str__(self):
         return self.user_id
