@@ -9,6 +9,7 @@ from user.util import nickname_generate
 
 import re
 
+
 class UserRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(allow_null=True)
     profile_image = serializers.ImageField(allow_null=True)
