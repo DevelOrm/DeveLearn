@@ -28,6 +28,9 @@ class TestCommentSerializer(serializers.ModelSerializer):
 
 
 class LectureNoteSerializer(serializers.ModelSerializer):
+    upload_file = serializers.FileField(required=False, allow_null=True)
+    upload_image = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = LectureNote
         fields = '__all__'
@@ -40,6 +43,8 @@ class LectureNoteCommentSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    upload_image = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Question
         fields = '__all__'
