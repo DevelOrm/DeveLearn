@@ -63,7 +63,7 @@ class Test(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     solution = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
-    auto_score = models.BooleanField()
+    auto_score = models.BooleanField(default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -79,8 +79,8 @@ class LectureNote(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()
-    upload_file = models.FileField(upload_to='lecturenote/file/', null=True, blank=True)
-    upload_image = models.ImageField(upload_to='lecturenote/image/', null=True, blank=True)
+    upload_file = models.FileField(upload_to='lecturenote/file/', null=True, blank=True, default=None)
+    upload_image = models.ImageField(upload_to='lecturenote/image/', null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -96,7 +96,7 @@ class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     content = models.TextField()
-    upload_image = models.ImageField(upload_to='question/image/', null=True, blank=True)
+    upload_image = models.ImageField(upload_to='question/image/', null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
