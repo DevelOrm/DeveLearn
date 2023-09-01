@@ -23,16 +23,16 @@
   <img width="1796" alt="서버구조" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/c233f21d-3ed8-4107-aec1-1a064fafdee8">
 
 # Index
-  1. 기술스택 & 개발환경
-  2. 팀원소개 및 역할
-  3. 프로젝트 요약
-  4. 주요 기능 소개
-  5. 라이브 데모
-  6. 개발 중 장애물 & 극복 방법
-  7. 추가 및 리서치 하고 싶은 기능
-  8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)
-  9. Q & A
-
+  [1. 기술스택 & 개발환경](#1-기술-스택--개발-환경)  
+  [2. 팀원소개 및 역할](#2-팀원소개-및-역할)  
+  [3. 프로젝트 요약](#3-프로젝트-요약)  
+  [4. 주요 기능 소개](#4-주요-기능-소개)  
+  [5. 라이브 데모](#5-기능app별-라이브-데모)  
+  [6. 개발 중 장애물 & 극복 방법](#6-개발-중-장애물--극복-방법)  
+  [7. 추가 및 리서치 하고 싶은 기능](#7-추가-및-리서치-하고-싶은-기능)  
+  [8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)](#8-프로젝트-소감-어려웠던-점--배운점--향후-계획)  
+  [9. Q & A](#)
+  
 # 1. 기술 스택 & 개발 환경
 <table>
     <thead align="center">
@@ -40,7 +40,6 @@
             <th><span>BE</span></th>
             <th><span>FE</span></th>
             <th><span>DB</span></th>
-            <th><span>DESIGN</span></th>
             <th><span>DEPLOYMENT</span></th>
             <th><span></span>MANAGEMENT</th>
         </tr>
@@ -52,14 +51,11 @@
           </td>
           <td align="center">
               <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-              <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+              <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
               <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
           </td>
           <td align="center">
               <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white">
-          </td>
-          <td align="center">
-              <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
           </td>
           <td align="center">
               <img src="https://img.shields.io/badge/amazon LightSail-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
@@ -97,19 +93,19 @@
     <tbody>
         <tr>
             <td align="center">
-                <img width="125px" src="https://avatars.githubusercontent.com/u/90359639?v=4"/>
+                <img width="200px" src="https://avatars.githubusercontent.com/u/90359639?v=4"/>
             </td>
             <td align="center">
-                <img width="125px" src="https://avatars.githubusercontent.com/u/89283288?v=4"/>
+                <img width="200px" src="https://avatars.githubusercontent.com/u/89283288?v=4"/>
             </td>
             <td align="center">
-                <img width="125px" src="https://avatars.githubusercontent.com/u/95518318?v=4"/>
+                <img width="200px" src="https://avatars.githubusercontent.com/u/95518318?v=4"/>
             </td>
             <td align="center">
-                <img width="125px" src="https://avatars.githubusercontent.com/u/120623320?v=4"/>
+                <img width="200px" src="https://avatars.githubusercontent.com/u/120623320?v=4"/>
             </td>
             <td align="center">
-                <img width="125px" src="https://avatars.githubusercontent.com/u/131739329?v=4"/>
+                <img width="200px" src="https://avatars.githubusercontent.com/u/131739329?v=4"/>
             </td>
         </tr>
         <tr>
@@ -156,6 +152,34 @@
   - 협업
     - Notion 기반 프로젝트 일정관리 진행하였습니다.
     - 협업 효율 최적화를 위해 일 3회(9/13/16시) 정기회의를 진행하였습니다.
+
+<table>
+  <colgroup>
+      <col style="width: 250px;">
+      <col style="width: 250px;">
+      <col style="width: 250px;">
+  </colgroup>
+  <thead align="center">
+      <tr>
+          <th>팀스페이스</th>
+          <th>일정</th>
+          <th>회의록</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td align="center">
+              <img height="400px" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/f2473711-8cb4-4834-ad8c-8e13d114ec32"/>
+          </td>
+          <td align="center">
+              <img height="400px" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/8ad1b74a-05e3-4197-b32b-8740b8db08ea"/>
+          </td>
+          <td align="center">
+              <img height="400px" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/d5fdebdc-f460-43f6-a0fa-8c0166a16a92"/>
+          </td>
+      </tr>
+  </tbody>
+</table>
 
    
 # 4. 주요 기능 소개
