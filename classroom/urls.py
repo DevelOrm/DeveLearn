@@ -54,19 +54,19 @@ urlpatterns = [
 
     ## 강의자료 게시글
     # 강의자료 게시글 목록 조회 및 강의자료 게시글 생성
-    path('lecturenote/post/', LectureNoteView.as_view()),
+    path('lecture_note/post/', LectureNoteView.as_view()),
     # 강의자료 게시글 상세 조회, 수정, 삭제
-    path('lecturenote/post/detail/<int:pk>/', LectureNoteDetailView.as_view()),
+    path('lecture_note/post/detail/<int:pk>/', LectureNoteDetailView.as_view()),
     # 게시판별 강의자료 게시글 조회
-    path('lecturenote/post/<int:pk>/', LectureNoteByBoardView.as_view()),
+    path('lecture_note/post/<int:pk>/', LectureNoteByBoardView.as_view()),
 
     ## 강의자료 게시글 댓글
     # 강의자료 게시글 댓글 목록 조회 및 댓글 작성
-    path('lecturenote/comment/', LectureNoteCommentView.as_view()),
+    path('lecture_note/comment/', LectureNoteCommentView.as_view()),
     # 강의자료 게시글 댓글 상세 조회, 삭제
-    path('lecturenote/comment/detail/<int:pk>/', LectureNoteCommentDetailView.as_view()),
+    path('lecture_note/comment/detail/<int:pk>/', LectureNoteCommentDetailView.as_view()),
     # 게시글별 댓글 조회
-    path('lecturenote/comment/<int:pk>/', LectureNoteCommentByPostView.as_view()),
+    path('lecture_note/comment/<int:pk>/', LectureNoteCommentByPostView.as_view()),
 
     ## 질문 게시글
     # 질문 게시글 목록 조회 및 질문 게시글 생성
