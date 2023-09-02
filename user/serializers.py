@@ -13,7 +13,7 @@ import re
 class UserRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(allow_null=True)
     profile_image = serializers.ImageField(allow_null=True)
-    phone_number =  serializers.CharField(allow_null=True)
+    phone_number = serializers.CharField()
     is_teacher = serializers.BooleanField()
 
     def validate_phone_number(self, phone_number):
@@ -21,9 +21,6 @@ class UserRegisterSerializer(RegisterSerializer):
 
         if not re.match(pattern, phone_number):
             raise serializers.ValidationError("올바른 핸드폰 번호를 입력해주세요.")
-
-        if phone_number == None:
-            raise serializers.ValidationError("핸드폰 번호를 입력해주세요.")
         if User.objects.filter(phone_number=phone_number).exists():
             raise serializers.ValidationError("이미 사용 중인 핸드폰 번호입니다.")
         return phone_number
