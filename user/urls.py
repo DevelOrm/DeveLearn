@@ -1,7 +1,7 @@
 from django.urls import path, re_path, include
-from user.views import UserInfoView, Duplication_Check, NaverLoginView, NaverLoginCallbackView, NaverLoginCompleteView, ConfirmEmailView
+from user.views import UserInfoView, Duplication_Check, NaverLoginView, NaverLoginCallbackView, NaverLoginCompleteView, ConfirmEmailView, PasswordResetPageView
 from dj_rest_auth.views import (
-    LoginView, LogoutView, PasswordChangeView, PasswordResetConfirmView, PasswordResetView)
+    LoginView, LogoutView, PasswordChangeView, PasswordResetView)
 from dj_rest_auth.registration.views import SocialAccountDisconnectView, VerifyEmailView
 from dj_rest_auth.registration.views import VerifyEmailView
 from dj_rest_auth.app_settings import api_settings
@@ -13,7 +13,7 @@ urlpatterns = [
     path('duplication/', Duplication_Check.as_view(), name='duplication_check'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
-    path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
+    path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetPageView.as_view(),name='password_reset_confirm'),
     path('registration/', include('dj_rest_auth.registration.urls')),
     re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ConfirmEmailView.as_view(), name='account_confirm_email'),
