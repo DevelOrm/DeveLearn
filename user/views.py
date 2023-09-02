@@ -2,6 +2,7 @@
 from allauth.socialaccount.providers.naver.views import NaverOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+from dj_rest_auth.views import PasswordResetConfirmView
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 
 from rest_framework import status
@@ -15,6 +16,7 @@ import requests
 from user.util import nickname_generate
 
 import os
+import re
 import environ
 from pathlib import Path
 from django.shortcuts import redirect
@@ -106,7 +108,7 @@ class NaverLoginView(APIView):
     )
     def get(self, request):
         client_id = env.str('NAVER_CLIENT_ID')
-        callback = env.str('MAIN_DOMAIN') + 'user/social/naver/callback/'
+        callback = env.str('MAIN_DOMAIN') + '/user/social/naver/callback/'
         return redirect(f'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={client_id}&redirect_uri={callback}')
     
 class NaverLoginCallbackView(APIView):
@@ -223,7 +225,6 @@ class NaverLoginCompleteView(SocialLoginView):
 #     adapter_class = KakaoOAuth2Adapter
 #     client_class = OAuth2Client
 
-
 class ConfirmEmailView(APIView):
     @extend_schema(
         summary="이메일 인증 확인",
@@ -233,7 +234,7 @@ class ConfirmEmailView(APIView):
     def get(self, *args, **kwargs):
         self.object = confirmation = self.get_object()
         confirmation.confirm(self.request)
-        return Response("success", status=status.HTTP_200_OK)
+        return redirect(f'http://develearn.co.kr')
 
     def get_object(self, queryset=None):
         key = self.kwargs['key']
@@ -251,5 +252,15 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
-    
 
+class PasswordResetPageView(PasswordResetConfirmView):
+    def get(self, request, *args, **kwargs):
+        requestURL = request.path
+        requestData = requestURL.split("/")
+
+        uid = requestData[-2]
+        token = requestData[-1]
+
+        passwordChangePage = 'http://develearn.co.kr' + "?uid=" + uid + "?token=" + token + "/"
+
+        return redirect(passwordChangePage)
