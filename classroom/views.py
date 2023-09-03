@@ -1457,4 +1457,27 @@ class TestSubmitByTestUserView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TestSubmitCurrentUserView(APIView):
+    paginator = TestSubmitPagination()
+
+    @extend_schema(
+        summary="요청한 유저의 문제 답변 조회",
+        description="임시",
+        tags=["Classroom-TestSubmit"],
+        responses=TestSubmitSerializer,
+    )
+    def get(self, request):
+        try:
+            queryset = TestSubmit.objects.filter(user=request.user.pk)
+            if request.user.is_authenticated:
+                result_page = self.paginator.paginate_queryset(queryset, request)
+                serializer = TestSubmitSerializer(result_page, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
+        except TestSubmit.DoesNotExist:
+            return Response({"error": "TestSubmit not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # /TestSubmit 문제 답변
