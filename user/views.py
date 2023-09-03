@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from user.models import User
-from user.serializers import UserInfoSerializer, DuplicationCheckSerializer
+from user.serializers import UserInfoSerializer, UseridDuplicationCheckSerializer, NicknameDuplicationCheckSerializer, EmailDuplicationCheckSerializer, PhonenumberDuplicationCheckSerializer
 
 import requests
 from user.util import nickname_generate
@@ -86,16 +86,58 @@ class UserInfoView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class Duplication_Check(APIView):
+class UseridDuplicationCheck(APIView):
     @extend_schema(
-        summary="유저 필드 중복 체크",
-        description="유저 필드 중복 체크",
+        summary="유저 아이디 중복 체크",
+        description="유저 아이디 중복 체크",
         tags=["User"],
-        request=UserInfoSerializer,
-        responses=UserInfoSerializer,
+        request=UseridDuplicationCheckSerializer,
+        responses=UseridDuplicationCheckSerializer,
     )
     def post(self, request):
-        serializer = DuplicationCheckSerializer(data=request.data)
+        serializer = UseridDuplicationCheckSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({"message": "중복된 항목이 없습니다."})
+        return Response(serializer.errors, status=400)
+
+class NicknameDuplicationCheck(APIView):
+    @extend_schema(
+        summary="유저 닉네임 중복 체크",
+        description="유저 닉네임 중복 체크",
+        tags=["User"],
+        request=NicknameDuplicationCheckSerializer,
+        responses=NicknameDuplicationCheckSerializer,
+    )
+    def post(self, request):
+        serializer = NicknameDuplicationCheckSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({"message": "중복된 항목이 없습니다."})
+        return Response(serializer.errors, status=400)
+
+class EmailDuplicationCheck(APIView):
+    @extend_schema(
+        summary="유저 이메일 중복 체크",
+        description="유저 이메일 중복 체크",
+        tags=["User"],
+        request=EmailDuplicationCheckSerializer,
+        responses=EmailDuplicationCheckSerializer,
+    )
+    def post(self, request):
+        serializer = EmailDuplicationCheckSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({"message": "중복된 항목이 없습니다."})
+        return Response(serializer.errors, status=400)
+
+class PhonenumberDuplicationCheck(APIView):
+    @extend_schema(
+        summary="유저 핸드폰 번호 중복 체크",
+        description="유저 핸드폰 번호 중복 체크",
+        tags=["User"],
+        request=PhonenumberDuplicationCheckSerializer,
+        responses=PhonenumberDuplicationCheckSerializer,
+    )
+    def post(self, request):
+        serializer = PhonenumberDuplicationCheckSerializer(data=request.data)
         if serializer.is_valid():
             return Response({"message": "중복된 항목이 없습니다."})
         return Response(serializer.errors, status=400)
@@ -234,7 +276,7 @@ class ConfirmEmailView(APIView):
     def get(self, *args, **kwargs):
         self.object = confirmation = self.get_object()
         confirmation.confirm(self.request)
-        return redirect(f'http://develearn.co.kr')
+        return redirect(f'http://develearn.co.kr/registration-complete.html')
 
     def get_object(self, queryset=None):
         key = self.kwargs['key']

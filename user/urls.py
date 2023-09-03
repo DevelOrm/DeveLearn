@@ -1,5 +1,5 @@
 from django.urls import path, re_path, include
-from user.views import UserInfoView, Duplication_Check, NaverLoginView, NaverLoginCallbackView, NaverLoginCompleteView, ConfirmEmailView, PasswordResetPageView
+from user.views import UserInfoView, UseridDuplicationCheck, NicknameDuplicationCheck, EmailDuplicationCheck, PhonenumberDuplicationCheck, NaverLoginView, NaverLoginCallbackView, NaverLoginCompleteView, ConfirmEmailView, PasswordResetPageView
 from dj_rest_auth.views import (
     LoginView, LogoutView, PasswordChangeView, PasswordResetView)
 from dj_rest_auth.registration.views import SocialAccountDisconnectView, VerifyEmailView
@@ -10,7 +10,10 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='rest_login'),
     path('logout/', LogoutView.as_view(), name='rest_logout'),
     path('info/', UserInfoView.as_view(), name='user_info'),
-    path('duplication/', Duplication_Check.as_view(), name='duplication_check'),
+    path('duplication/userid/', UseridDuplicationCheck.as_view(), name='userid_duplication_check'),
+    path('duplication/nickname/', NicknameDuplicationCheck.as_view(), name='nickname_duplication_check'),
+    path('duplication/email/', EmailDuplicationCheck.as_view(), name='email_duplication_check'),
+    path('duplication/phonenumber/', PhonenumberDuplicationCheck.as_view(), name='phonenumber_duplication_check'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
     path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetPageView.as_view(),name='password_reset_confirm'),
