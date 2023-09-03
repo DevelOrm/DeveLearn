@@ -52,6 +52,12 @@ class TestCommentSerializer(serializers.ModelSerializer):
     user_id = serializers.CharField(source='user.user_id', read_only=True)
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
 
+    current_user = serializers.SerializerMethodField(read_only=True)
+
+    def get_current_user(self, request):
+        request = self.context.get('request', None)
+        return request.user.user_id
+
     class Meta:
         model = TestComment
         fields = '__all__'
@@ -84,6 +90,12 @@ class LectureNoteCommentSerializer(serializers.ModelSerializer):
     user_id = serializers.CharField(source='user.user_id', read_only=True)
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
 
+    current_user = serializers.SerializerMethodField(read_only=True)
+
+    def get_current_user(self, request):
+        request = self.context.get('request', None)
+        return request.user.user_id
+
     class Meta:
         model = LectureNoteComment
         fields = '__all__'
@@ -114,6 +126,12 @@ class QuestionCommentSerializer(serializers.ModelSerializer):
     post_name = serializers.CharField(source='question.title', read_only=True)
     user_id = serializers.CharField(source='user.user_id', read_only=True)
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
+
+    current_user = serializers.SerializerMethodField(read_only=True)
+
+    def get_current_user(self, request):
+        request = self.context.get('request', None)
+        return request.user.user_id
 
     class Meta:
         model = QuestionComment

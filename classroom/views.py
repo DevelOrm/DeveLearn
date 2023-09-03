@@ -669,7 +669,7 @@ class TestCommentView(APIView):
             queryset = TestComment.objects.all()
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = TestCommentSerializer(result_page, many=True)
+                serializer = TestCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -708,7 +708,7 @@ class TestCommentDetailView(APIView):
         try:
             queryset = TestComment.objects.get(pk=pk)
             if request.user.is_authenticated:
-                serializer = TestCommentSerializer(queryset)
+                serializer = TestCommentSerializer(queryset, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except TestComment.DoesNotExist:
@@ -771,7 +771,7 @@ class TestCommentByPostView(APIView):
             queryset = TestComment.objects.filter(test=pk)
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = TestCommentSerializer(result_page, many=True)
+                serializer = TestCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -924,7 +924,7 @@ class LectureNoteCommentView(APIView):
             queryset = LectureNoteComment.objects.all()
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = LectureNoteCommentSerializer(result_page, many=True)
+                serializer = LectureNoteCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -963,7 +963,7 @@ class LectureNoteCommentDetailView(APIView):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
             if request.user.is_authenticated:
-                serializer = LectureNoteCommentSerializer(queryset)
+                serializer = LectureNoteCommentSerializer(queryset, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except LectureNoteComment.DoesNotExist:
@@ -1026,7 +1026,7 @@ class LectureNoteCommentByPostView(APIView):
             queryset = LectureNoteComment.objects.filter(lecture_note=pk)
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = LectureNoteCommentSerializer(result_page, many=True)
+                serializer = LectureNoteCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -1179,7 +1179,7 @@ class QuestionCommentView(APIView):
             queryset = QuestionComment.objects.all()
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = QuestionCommentSerializer(result_page, many=True)
+                serializer = QuestionCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
@@ -1218,7 +1218,7 @@ class QuestionCommentDetailView(APIView):
         try:
             queryset = QuestionComment.objects.get(pk=pk)
             if request.user.is_authenticated:
-                serializer = QuestionCommentSerializer(queryset)
+                serializer = QuestionCommentSerializer(queryset, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except QuestionComment.DoesNotExist:
@@ -1283,7 +1283,7 @@ class QuestionCommentByPostView(APIView):
             queryset = QuestionComment.objects.filter(question=pk)
             if request.user.is_authenticated:
                 result_page = self.paginator.paginate_queryset(queryset, request)
-                serializer = QuestionCommentSerializer(result_page, many=True)
+                serializer = QuestionCommentSerializer(result_page, context={'request': request}, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
