@@ -62,8 +62,6 @@ class TestSubmitPagination(PageNumberPagination):
 # examples : 요청/응답에 대한 예시
 ####################
 
-# Classroom 클래스룸
-
 
 class ClassroomView(APIView):
     paginator = ClassroomPagination()
@@ -279,7 +277,6 @@ class ClassroomByTeacherView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# Subscription 구독정보
 class SubscriptionView(APIView):
     @extend_schema(
         summary="클래스 구독 정보 조회",
@@ -395,10 +392,8 @@ class SubscriptionByUserView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Subscription 구독정보
 
 
-# Board 문제게시판
 class BoardView(APIView):
     @extend_schema(
         summary="게시판 조회",
@@ -514,10 +509,8 @@ class BoardByClassView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Board 게시판
 
 
-# Test 문제게시글
 class TestView(APIView):
     paginator = PostPagination()
 
@@ -648,13 +641,8 @@ class TestByBoardView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Test 문제게시글
-
-# classroom/test까지 spectacular 1차 적용 - depth 구분 범위 재검토 필요
-# ==================================================================================
 
 
-# TestComment 문제댓글
 class TestCommentView(APIView):
     paginator = CommentPagination()
 
@@ -776,10 +764,8 @@ class TestCommentByPostView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /TestComment 문제댓글
 
 
-# LectureNote 강의자료게시글
 class LectureNoteView(APIView):
     paginator = PostPagination()
 
@@ -906,10 +892,8 @@ class LectureNoteByBoardView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /LectureNote 강의자료게시글
 
 
-# LectureNoteComment 강의자료댓글
 class LectureNoteCommentView(APIView):
     paginator = CommentPagination()
 
@@ -1031,10 +1015,8 @@ class LectureNoteCommentByPostView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /LectureNoteComment 강의자료댓글
 
 
-# Question 질문게시글
 class QuestionView(APIView):
 
     paginator = PostPagination()
@@ -1161,10 +1143,8 @@ class QuestionByBoardView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Question 질문게시글
 
 
-# Comment 댓글
 class QuestionCommentView(APIView):
     paginator = CommentPagination()
 
@@ -1288,10 +1268,8 @@ class QuestionCommentByPostView(APIView):
             return Response({"error": "Not available to access"}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /Comment 댓글
 
 
-# TestSubmit 문제 답변
 class TestSubmitView(APIView):
     paginator = TestSubmitPagination()
 
@@ -1480,4 +1458,3 @@ class TestSubmitCurrentUserView(APIView):
             return Response({"error": "TestSubmit not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# /TestSubmit 문제 답변
