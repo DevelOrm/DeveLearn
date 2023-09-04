@@ -1,47 +1,56 @@
 # DeveLearn
-  - 팀명: DeveLorm
-  - 주제(서비스명): 온라인 학습 플랫폼
-    - 클래스를 운영하는 선생님과, 원하는 클래스를 수강하는 학생 간의 교육이 이루어지는 온라인 학습 플랫폼입니다.
-  - REPO 주소: https://github.com/DevelOrm/DeveLearn
 
-  ![메인](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/c04c8f3f-feac-48d2-9e5e-6036a6ca66e0)
+- 팀명: DeveLorm
+- 주제(서비스명): 온라인 학습 플랫폼
+  - 클래스를 운영하는 선생님과, 원하는 클래스를 수강하는 학생 간의 교육이 이루어지는 온라인 학습 플랫폼입니다.
+- REPO 주소: https://github.com/DevelOrm/DeveLearn
+
+<img width="2048" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/c04c8f3f-feac-48d2-9e5e-6036a6ca66e0">
 
 # 개발 기간
-  - 23.8.17 ~ 23.09.04
+
+- 23.8.17 ~ 23.09.04
 
 # DataBase Structure
-  ![ERD](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ef6ae05e-57b3-437d-9501-16dd91d4b21d)
+
+<img width="2048" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ef6ae05e-57b3-437d-9501-16dd91d4b21d">
 
 # 배포 URL
-  - FE: http://develearn.co.kr/
-  - BE: http://52.79.53.117/
-  - 테스트용 계정
-      - id: user1
-      - pw: pw1
+
+- FE: http://develearn.co.kr/
+- BE: http://52.79.53.117/
+- 테스트용 계정
+  - id: user1
+  - pw: pw1
 
 # 배포 서버 구조
-  ![서버구조2](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/fe6b7858-b548-4883-a107-ccd5813fe61c)
+
+<img width="2048" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/fe6b7858-b548-4883-a107-ccd5813fe61c">
 
 # API 명세 자동화
-  > drf-spectacular 적용
-  - http://52.79.53.117/api/swagger (swagger-ui)
-  - http://52.79.53.117/api/redoc (redoc-ui)
-  - 테스트용 관리자 계정 (관리자 계정만 접근할 수 있습니다.)
-    - id: test
-    - pw: test
+
+> drf-spectacular 적용
+
+- http://52.79.53.117/api/swagger (swagger-ui)
+- http://52.79.53.117/api/redoc (redoc-ui)
+- 테스트용 관리자 계정 (관리자 계정만 접근할 수 있습니다.)
+  - id: test
+  - pw: test
 
 # Index
-  [1. 기술스택 & 개발환경](#1-기술-스택--개발-환경)  
-  [2. 팀원소개 및 역할](#2-팀원소개-및-역할)  
-  [3. 프로젝트 요약](#3-프로젝트-요약)  
-  [4. 주요 기능 소개](#4-주요-기능-소개)  
-  [5. 라이브 데모](#5-기능app별-라이브-데모)  
-  [6. 개발 중 장애물 & 극복 방법](#6-개발-중-장애물--극복-방법)  
-  [7. 추가 및 리서치 하고 싶은 기능](#7-추가-및-리서치-하고-싶은-기능)  
-  [8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)](#8-프로젝트-소감-어려웠던-점--배운점--향후-계획)  
-  [9. Q & A](#)
-  
+
+[1. 기술스택 & 개발환경](#1-기술-스택--개발-환경)  
+ [2. 팀원소개 및 역할](#2-팀원소개-및-역할)  
+ [3. 프로젝트 요약](#3-프로젝트-요약)  
+ [4. 주요 기능 소개](#4-주요-기능-소개)  
+ [5. 라이브 데모](#5-기능app별-라이브-데모)  
+ [6. 개발 중 장애물 & 극복 방법](#6-개발-중-장애물--극복-방법)  
+ [7. 추가 및 리서치 하고 싶은 기능](#7-추가-및-리서치-하고-싶은-기능)  
+ [8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)](#8-프로젝트-소감-어려웠던-점--배운점--향후-계획)  
+ [9. Q & A](#)
+
 # 1. 기술 스택 & 개발 환경
+
 <table>
     <thead align="center">
         <tr>
@@ -142,23 +151,23 @@
     </tbody>
 </table>
 
-
 # 3. 프로젝트 요약
-  - 서비스 전체 개요
-    - 온라인 학습 플랫폼 DeveLearn은 선생님-학생 간 학습이 이루어지는 공간입니다.
-    - 선생님은 기술스택 별 클래스를 개설하고 문제출제(문제게시판), 강의자료 게시(자료게시판), 질문대응(질문게시판)을 수행합니다.
-    - 학생은 원하는 기술스택 클래스를 수강하며 문제 답변제출(문제게시판), 강의자료 다운로드(자료게시판), 질문등록(질문게시판)을 할 수 있습니다.
-    - 선생님이 출제하고 학생이 제출한 문제 답변을 자동으로 채점하여 결과를 피드백합니다.
-    - 사용자별(학생, 선생님) 클래스 구독 정보를 알 수 있습니다.
-    - IT업계 동향을 파악할 수 있는 최신 뉴스를 홈페이지에서 보여줍니다.
-      
-  - 서비스 개발 관점
-    - drf-spectacular를 적용해 API 명세를 작성하여 협업 간 효율증진을 도모하였습니다.
-    - 서비스를 실 배포하여(Lightsail, EC2활용) 추후 운영이 가능하도록 하였습니다.
-   
-  - 협업
-    - Notion 기반 프로젝트 일정관리 진행하였습니다.
-    - 협업 효율 최적화를 위해 일 3회(9/13/16시) 정기회의를 진행하였습니다.
+
+- 서비스 전체 개요
+  - 온라인 학습 플랫폼 DeveLearn은 선생님-학생 간 학습이 이루어지는 공간입니다.
+  - 선생님은 기술스택 별 클래스를 개설하고 문제출제(문제게시판), 강의자료 게시(자료게시판), 질문대응(질문게시판)을 수행합니다.
+  - 학생은 원하는 기술스택 클래스를 수강하며 문제 답변제출(문제게시판), 강의자료 다운로드(자료게시판), 질문등록(질문게시판)을 할 수 있습니다.
+  - 선생님이 출제하고 학생이 제출한 문제 답변을 자동으로 채점하여 결과를 피드백합니다.
+  - 사용자별(학생, 선생님) 클래스 구독 정보를 알 수 있습니다.
+  - IT업계 동향을 파악할 수 있는 최신 뉴스를 홈페이지에서 보여줍니다.
+- 서비스 개발 관점
+
+  - drf-spectacular를 적용해 API 명세를 작성하여 협업 간 효율증진을 도모하였습니다.
+  - 서비스를 실 배포하여(Lightsail, EC2활용) 추후 운영이 가능하도록 하였습니다.
+
+- 협업
+  - Notion 기반 프로젝트 일정관리 진행하였습니다.
+  - 협업 효율 최적화를 위해 일 3회(9/13/16시) 정기회의를 진행하였습니다.
 
 <table>
   <colgroup>
@@ -188,165 +197,181 @@
   </tbody>
 </table>
 
-   
 # 4. 주요 기능 소개
-  - Classroom
-    > 클래스룸 - 게시판 - 댓글 구조의 기본 CRUD 기능을 제공한다
-    
-    - 클래스룸
 
-    게시판의 종류는 문제 게시판, 강의자료 게시판, 질문 게시판 총 3가지가 있다
-    선생님으로 지정된 유저가 클래스룸, 게시판을 생성할 수 있고 클래스룸을 구독한 유저들이 이를 자유롭게 이용 가능하다
-    
-    - 문제 게시판
-   
-    선생님으로 지정된 유저가 문제 게시글을 생성하면 각 유저들이 자유롭게 문제에 대한 댓글 혹은 답변 제출이 가능하다
-    auto_score가 true인 문제 게시글에 유저가 답변을 제출하면 미리 지정된 문제 게시글의 solution필드와 비교해 채점하며 정답 여부가 answer_status필드에 저장된다
-    
-      ```python
-      ## models.py
-      class Test(models.Model):
-          solution = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
-          auto_score = models.BooleanField()
-          # ...
-      
-      ## views.py TestSubmitView
-      def post(self, request):
-          try:
-              test_pk = request.data['test']
-              test_obj = Test.objects.get(pk=test_pk)
-              if request.user.is_authenticated:
-                  solution = test_obj.solution
-                  user_answer = request.data['user_answer']
-                  if test_obj.auto_score:
-                      answer_status = user_answer in solution
-                  else:
-                      answer_status = None
-          # ...
-      ```
-    
-    - 강의자료 게시판
-   
-    선생님으로 지정된 유저가 학습용 파일, 이미지, 텍스트를 게시글로 작성할 수 있고 유저들이 자유롭게 이용 가능하다
-    
-    - 질문 게시판
-    
-    클래스룸을 구독한 유저 모두가 이용 가능하며 이미지를 첨부해 게시글을 작성할 수 있다
+- Classroom
 
-    - 댓글
-    
-    로그인된 유저는 각 게시판의 게시글에 댓글을 작성할 수 있다
-    
-  - News
-    > GitHub Action을 이용하여 개발 관련 키워드를 검색하여 나온 뉴스 크롤링을 매일 진행한다. 크롤링된 뉴스 목록은 post로 `/news/bot/`의 URL로 전송하여 서버 DB에 저장한다.
+  > 클래스룸 - 게시판 - 댓글 구조의 기본 CRUD 기능을 제공한다
 
-    - 크롤링 봇 자동화
-    
-      ```yml
-      ## .github/workflows/DeveLearnNewsBot.yml
-      on:
-        schedule:
-          - cron: "0 21 * * *"
-      
-      jobs:
-        build:
-          # ...
-      
-          - name: Install dependencies
-            run: |
-              python -m pip install --upgrade pip
-              python -m pip install beautifulsoup4
-              python -m pip install requests
-          - name: run macro main.py file
-            run: |
-              python main.py
-      ```
-    
-    GitHub Action을 이용하여 매일 `21:00 UTC` 에 Linux에 환경세팅 후 main.py 파일을 실행하도록 설정했다. main.py 파일에서 크롤링 함수를 실행하고 서버 URL에 뉴스 데이터를 담아 전송하면, 서버에서 데이터 확인 후 DB에 저장하게 된다.
-    
-    - 검색엔진 확장성
-    
-      ```python
-      ## NewsBot.py
-      def NaverNews(keyword):
-          # ...
-      
-      def GoogleNews(keyword):
-          # ...
-      
-      ## main.py
-      import NewsBot
-      
-      NewsBot.NaverNews(keyword)
+  - 클래스룸
+
+  게시판의 종류는 문제 게시판, 강의자료 게시판, 질문 게시판 총 3가지가 있다
+  선생님으로 지정된 유저가 클래스룸, 게시판을 생성할 수 있고 클래스룸을 구독한 유저들이 이를 자유롭게 이용 가능하다
+
+  - 문제 게시판
+
+  선생님으로 지정된 유저가 문제 게시글을 생성하면 각 유저들이 자유롭게 문제에 대한 댓글 혹은 답변 제출이 가능하다
+  auto_score가 true인 문제 게시글에 유저가 답변을 제출하면 미리 지정된 문제 게시글의 solution필드와 비교해 채점하며 정답 여부가 answer_status필드에 저장된다
+
+  ```python
+  ## models.py
+  class Test(models.Model):
+      solution = ArrayField(models.CharField(max_length=50, blank=True), null=True, blank=True)
+      auto_score = models.BooleanField()
       # ...
-      ```
-    
-    각 검색엔진에서 뉴스 리스트를 크롤링하는 기능을 하나의 함수로 구현하여 `main.py`에서 실행하도록 구조화하였다. 이를 통해 추후 크롤링할 검색엔진 추가 또는 페이지 구조 변경으로 인한 함수 수정 시 용이성을 높일 수 있었다.
-    
-    - 검색 키워드 확장성
-    
-      ```python
-      ## keywords.txt
-      keyword1 keyword2 ...
-      
-      ## main.py
-      with open('keywords.txt', 'r') as keywords_file:
-              keywords = keywords_file.read().split()
-      
-          for keyword in keywords:
-              NewsBot.NaverNews(keyword)
-              # ...
-      ```
-    
-    검색에 사용할 키워드를 외부 파일에서 가져와 각 검색 엔진 크롤링 함수에 넣어 실행하였다. 이를 통해 추후 검색 키워드 추가 및 변동 시 용이성을 높일 수 있었다.
-    
-    - 중복 뉴스 처리
-    
-      ```python
-      ## news/views.py
-      for news_index in data:
-          news = data[news_index]
-          if News.objects.filter(title=news['title']).exists():
-              continue
-      ```
-    
-    크롤링된 뉴스 데이터가 서버로 전송되면 중복을 확인하여 DB에 없는 뉴스인 경우에만 새로 추가한다. 같은 뉴스이더라도 redirect되는 링크가 상이할 수 있기 때문에 기사 제목으로 중복 여부를 확인하였다.
-    
-    각 뉴스 데이터마다 DB 호출을 하여 확인해야 하기 때문에 다소 비효율적인 측면이 존재한다. 우선적으로 가장 서버 활성이 적을 것이라 예상되는 늦은 새벽 시간에 크롤링 및 서버 전송이 동작하도록 설정하여 과부하를 최소화하였다.
-    
-    - 오늘의 뉴스 기능
-    
-      ```python
-      class NewsRecentView(generics.ListAPIView):
-          queryset = News.objects.all().order_by('-written_at')[:6]
-          serializer_class = NewsSerializer
-      ```
-    
-    프론트엔드 메인페이지에 오늘의 뉴스를 출력하기 위해 최신 뉴스 출력 기능을 구현하였다. 화면에 6개의 뉴스 객체를 출력하기 때문에 가장 최근에 DB에 추가된 순서대로 6개의 뉴스 데이터를 담아 브라우저에 응답한다.
-    
-    
-  - User
-    - ```AbstractBaseUser``` 상속 받아 Custom User Model 사용
-    - 회원가입, 회원 정보 조회, 회원 정보 수정,  회원 삭제 등 기본적인 User Model CRUD 제공
-    - 회원가입 시 닉네임 설정을 하지 않을 경우 랜덤 닉네임 생성
-    (60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 닉네임 생성 ex)열정적인 호랑이#1234)
-    - USER_ID, NICKNAME, EMAIL, PHONE_NUMBER 중복 체크 기능 지원 및 회원가입 시 추가적인 validate 검사 실행  
-    - OAuth2.0 (Naver 소셜 로그인) 지원
-    - dj-rest-auth 라이브러리(simple-JWT, all-auth) 사용해 비밀번호 초기화, 회원가입 시 이메일 인증 등 지원
 
+  ## views.py TestSubmitView
+  def post(self, request):
+      try:
+          test_pk = request.data['test']
+          test_obj = Test.objects.get(pk=test_pk)
+          if request.user.is_authenticated:
+              solution = test_obj.solution
+              user_answer = request.data['user_answer']
+              if test_obj.auto_score:
+                  answer_status = user_answer in solution
+              else:
+                  answer_status = None
+      # ...
+  ```
+
+  - 강의자료 게시판
+
+  선생님으로 지정된 유저가 학습용 파일, 이미지, 텍스트를 게시글로 작성할 수 있고 유저들이 자유롭게 이용 가능하다
+
+  - 질문 게시판
+
+  클래스룸을 구독한 유저 모두가 이용 가능하며 이미지를 첨부해 게시글을 작성할 수 있다
+
+  - 댓글
+
+  로그인된 유저는 각 게시판의 게시글에 댓글을 작성할 수 있다
+
+- News
+
+  > GitHub Action을 이용하여 개발 관련 키워드를 검색하여 나온 뉴스 크롤링을 매일 진행한다. 크롤링된 뉴스 목록은 post로 `/news/bot/`의 URL로 전송하여 서버 DB에 저장한다.
+
+  - 크롤링 봇 자동화
+
+    ```yml
+    ## .github/workflows/DeveLearnNewsBot.yml
+    on:
+      schedule:
+        - cron: "0 21 * * *"
+
+    jobs:
+      build:
+        # ...
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            python -m pip install beautifulsoup4
+            python -m pip install requests
+        - name: run macro main.py file
+          run: |
+            python main.py
+    ```
+
+  GitHub Action을 이용하여 매일 `21:00 UTC` 에 Linux에 환경세팅 후 main.py 파일을 실행하도록 설정했다. main.py 파일에서 크롤링 함수를 실행하고 서버 URL에 뉴스 데이터를 담아 전송하면, 서버에서 데이터 확인 후 DB에 저장하게 된다.
+
+  - 검색엔진 확장성
+
+    ```python
+    ## NewsBot.py
+    def NaverNews(keyword):
+        # ...
+
+    def GoogleNews(keyword):
+        # ...
+
+    ## main.py
+    import NewsBot
+
+    NewsBot.NaverNews(keyword)
+    # ...
+    ```
+
+  각 검색엔진에서 뉴스 리스트를 크롤링하는 기능을 하나의 함수로 구현하여 `main.py`에서 실행하도록 구조화하였다. 이를 통해 추후 크롤링할 검색엔진 추가 또는 페이지 구조 변경으로 인한 함수 수정 시 용이성을 높일 수 있었다.
+
+  - 검색 키워드 확장성
+
+    ```python
+    ## keywords.txt
+    keyword1 keyword2 ...
+
+    ## main.py
+    with open('keywords.txt', 'r') as keywords_file:
+            keywords = keywords_file.read().split()
+
+        for keyword in keywords:
+            NewsBot.NaverNews(keyword)
+            # ...
+    ```
+
+  검색에 사용할 키워드를 외부 파일에서 가져와 각 검색 엔진 크롤링 함수에 넣어 실행하였다. 이를 통해 추후 검색 키워드 추가 및 변동 시 용이성을 높일 수 있었다.
+
+  - 중복 뉴스 처리
+
+    ```python
+    ## news/views.py
+    for news_index in data:
+        news = data[news_index]
+        if News.objects.filter(title=news['title']).exists():
+            continue
+    ```
+
+  크롤링된 뉴스 데이터가 서버로 전송되면 중복을 확인하여 DB에 없는 뉴스인 경우에만 새로 추가한다. 같은 뉴스이더라도 redirect되는 링크가 상이할 수 있기 때문에 기사 제목으로 중복 여부를 확인하였다.
+
+  각 뉴스 데이터마다 DB 호출을 하여 확인해야 하기 때문에 다소 비효율적인 측면이 존재한다. 우선적으로 가장 서버 활성이 적을 것이라 예상되는 늦은 새벽 시간에 크롤링 및 서버 전송이 동작하도록 설정하여 과부하를 최소화하였다.
+
+  - 오늘의 뉴스 기능
+
+    ```python
+    class NewsRecentView(generics.ListAPIView):
+        queryset = News.objects.all().order_by('-written_at')[:6]
+        serializer_class = NewsSerializer
+    ```
+
+  프론트엔드 메인페이지에 오늘의 뉴스를 출력하기 위해 최신 뉴스 출력 기능을 구현하였다. 화면에 6개의 뉴스 객체를 출력하기 때문에 가장 최근에 DB에 추가된 순서대로 6개의 뉴스 데이터를 담아 브라우저에 응답한다.
+
+- User
+
+  - Custom User Model
+
+  `AbstractUser`가 아닌 `AbstractBaseUser` 상속 받아 Custom User Model 사용하여 필요하지 않은 기본 field가 출력되지 않도록 했다.
+
+  - 기본 유저 CRUD
+
+  회원가입, 회원 정보 조회, 회원 정보 수정, 회원 삭제 등 기본적인 User Model CRUD 기능을 구현하였다.
+
+  - 랜덤 닉네임
+
+  회원가입 시 닉네임 설정을 하지 않을 경우 랜덤 닉네임 생성하도록 구현하였다. 60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 닉네임 생성하여 같은 닉네임의 생성을 최대한 방지하였다. `예시: 열정적인 호랑이#1234`
+
+  - 회원가입 예외 처리
+
+  USER_ID, NICKNAME, EMAIL, PHONE_NUMBER를 입력했을 때 중복을 체크하는 기능을 구현하여 회원가입 시 추가적인 validate 검사 실행하였다.
+
+  - OAuth2.0 (Naver 소셜 로그인) 지원
+
+  - dj-rest-auth
+
+  dj-rest-auth 라이브러리(simple-JWT, all-auth) 사용해 비밀번호 초기화, 회원가입 시 이메일 인증 등의 기능을 구현하였다.
 
 # 5. 기능(APP)별 라이브 데모
-| APP | 이미지/데모 | 비고 |
-|:---:|:--------:|:---:|
-| Classroom | ![클래스룸1](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/99e2bb3d-23c3-4cf8-a27e-69df46caa213) | 클래스룸 동작 |
-| News | <img width="1469" alt="뉴스 목록" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/bba85e7c-ee9b-49b7-bbda-bf2b749e8df6"> | 뉴스 크롤링 |
-| User | <img width="1470" alt="회원가입" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/1034faac-41e8-4bca-84d3-183b65dcd105"> | 회원가입 |
-| User | <img width="1470" alt="회원가입예외" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/0c4b92f3-3e56-4278-8fb0-a53f323ab997"> | 회원가입 예외 |
-| drf-spectacular | ![swagger](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/d25104ca-50ce-4f28-a7e4-c7d35d329ca2) | SWAGGER-UI |
-| drf-spectacular | ![redoc](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ec15c63b-b9f4-4d02-93c0-7fdf6f0dc1d6) | REDOC-UI |
 
+|       APP       |                                                                     이미지/데모                                                                      |     비고      |
+| :-------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: |
+|    Classroom    |              ![클래스룸1](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/99e2bb3d-23c3-4cf8-a27e-69df46caa213)               | 클래스룸 동작 |
+|      News       | <img width="1469" alt="뉴스 목록" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/bba85e7c-ee9b-49b7-bbda-bf2b749e8df6"> |  뉴스 크롤링  |
+|      User       |          <img width="1470" alt="회원가입" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/1034faac-41e8-4bca-84d3-183b65dcd105">          |   회원가입    |
+|      User       |        <img width="1470" alt="회원가입예외" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/0c4b92f3-3e56-4278-8fb0-a53f323ab997">        | 회원가입 예외 |
+| drf-spectacular |                  ![swagger](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/d25104ca-50ce-4f28-a7e4-c7d35d329ca2)                   |  SWAGGER-UI   |
+| drf-spectacular |                   ![redoc](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ec15c63b-b9f4-4d02-93c0-7fdf6f0dc1d6)                    |   REDOC-UI    |
 
 # 6. 개발 중 장애물 & 극복 방법
+
   <table>
     <thead align="center">
         <tr>
@@ -403,8 +428,8 @@
     </tbody>
 </table>
 
-
 # 7. 추가 및 리서치 하고 싶은 기능
+
 <table>
     <thead align="center">
         <tr>
@@ -462,8 +487,8 @@
     </tbody>
 </table>
 
-
 # 8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)
-  - 어려웠던 점 (trouble shooting)
-  - 배운점
-  - 향후 계획
+
+- 어려웠던 점 (trouble shooting)
+- 배운점
+- 향후 계획
