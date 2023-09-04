@@ -37,6 +37,8 @@ ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CSRF_TRUSTED_ORIGINS = [env.str('CSRF_TRUSTED')]
+
 # CORS_ALLOWED_ORIGINS = [
 # 	# 허용할 Origin 추가
 #     "http://127.0.0.1:9000"
