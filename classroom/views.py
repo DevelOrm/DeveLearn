@@ -675,7 +675,7 @@ class TestCommentView(APIView):
             if request.user.is_authenticated:
                 user = request.user
                 request.data['user'] = user.pk
-                serializer = TestCommentSerializer(data=request.data)
+                serializer = TestCommentSerializer(data=request.data, context={'request': request})
                 if serializer.is_valid():
                     queryset = serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -715,7 +715,8 @@ class TestCommentDetailView(APIView):
         try:
             queryset = TestComment.objects.get(pk=pk)
             if request.user.is_authenticated and request.user == queryset.user:
-                serializer = TestCommentSerializer(queryset, data=request.data, partial=True)
+                serializer = TestCommentSerializer(queryset, data=request.data,
+                                                   context={'request': request}, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data)
@@ -926,7 +927,7 @@ class LectureNoteCommentView(APIView):
             if request.user.is_authenticated:
                 user = request.user
                 request.data['user'] = user.pk
-                serializer = LectureNoteCommentSerializer(data=request.data)
+                serializer = LectureNoteCommentSerializer(data=request.data, context={'request': request})
                 if serializer.is_valid():
                     queryset = serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -966,7 +967,8 @@ class LectureNoteCommentDetailView(APIView):
         try:
             queryset = LectureNoteComment.objects.get(pk=pk)
             if request.user.is_authenticated and request.user == queryset.user:
-                serializer = LectureNoteCommentSerializer(queryset, data=request.data, partial=True)
+                serializer = LectureNoteCommentSerializer(queryset, data=request.data,
+                                                          context={'request': request}, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data)
@@ -1177,7 +1179,7 @@ class QuestionCommentView(APIView):
             if request.user.is_authenticated:
                 user = request.user
                 request.data['user'] = user.pk
-                serializer = QuestionCommentSerializer(data=request.data)
+                serializer = QuestionCommentSerializer(data=request.data, context={'request': request})
                 if serializer.is_valid():
                     queryset = serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -1219,7 +1221,8 @@ class QuestionCommentDetailView(APIView):
             if request.user.is_authenticated and request.user == queryset.user:
                 user = request.user
                 request.data['user'] = user.pk
-                serializer = QuestionCommentSerializer(queryset, data=request.data, partial=True)
+                serializer = QuestionCommentSerializer(queryset, data=request.data,
+                                                       context={'request': request}, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data)
