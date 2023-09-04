@@ -13,11 +13,11 @@
   -
 
 # API 명세
-  - http://3.37.187.68:8000/api/swagger
-  - http://3.37.187.68:8000/api/redoc
+  - http://52.79.53.117/api/swagger
+  - http://52.79.53.117/api/redoc
   - 테스트 계정 (authenticated 된 계정만 접근할 수 있습니다.)
       - id: test
-      - pw: testpw00
+      - pw: test
 
 # 배포 서버 구조
   <img width="1796" alt="서버구조" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/c233f21d-3ed8-4107-aec1-1a064fafdee8">
@@ -327,8 +327,8 @@
 | Classroom | <img width="1470" alt="클래스룸 상세" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/9907d955-ac78-4181-a13d-fe66f6107e41"> | 클래스룸 상세 |
 | News | <img width="1469" alt="뉴스 목록" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/bba85e7c-ee9b-49b7-bbda-bf2b749e8df6"> | 뉴스 크롤링 |
 | User | <img width="1470" alt="로그인" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/641c4cc0-a4c2-4418-b181-b99a447ea33f"> | 유저 로그인 |
-| drf-spectacular |<img width="731" alt="swagger" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/9ebc11a4-e655-4062-9bae-a2d240e4d2ce">| SWAGGER-UI |
-| drf-spectacular |<img width="854" alt="redoc" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/71ad9542-cd88-4852-975c-14b8b2c38fda">| REDOC-UI |
+| drf-spectacular | ![swagger](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/d25104ca-50ce-4f28-a7e4-c7d35d329ca2) | SWAGGER-UI |
+| drf-spectacular | ![redoc](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ec15c63b-b9f4-4d02-93c0-7fdf6f0dc1d6) | REDOC-UI |
 
 
 # 6. 개발 중 장애물 & 극복 방법
