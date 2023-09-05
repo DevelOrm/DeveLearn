@@ -34,8 +34,14 @@
 - http://52.79.53.117/api/swagger (swagger-ui)
 - http://52.79.53.117/api/redoc (redoc-ui)
 - 테스트용 관리자 계정 (관리자 계정만 접근할 수 있습니다.)
-  - id: test
-  - pw: test
+
+  - id: test / pw: test
+
+    1. 어드민 페이지 접속 후 test 계정 로그인 (http://52.79.53.117/admin/)
+
+    2. swagger 또는 redoc url 접속
+
+<img width="2048" src="https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/d25104ca-50ce-4f28-a7e4-c7d35d329ca2">
 
 # Index
 
@@ -140,13 +146,6 @@
             <td align="center">
                 <a href="https://github.com/jongsoo-P">🔗jongsoo-P</a>
             </td>
-        </tr>
-        <tr>
-            <td align="center">유저</td>
-            <td align="center">뉴스</td>
-            <td align="center">클래스룸</td>
-            <td align="center">API 문서화</td>
-            <td align="center">배포</td>
         </tr>
         <tr>
             <td align="center">유저</td>
@@ -344,7 +343,8 @@
 
 - User
 
-  - ```AbstractBaseUser``` 상속 받아 불필요한 Field 제거 및 Custom Field 추가
+  - `AbstractBaseUser` 상속 받아 불필요한 Field 제거 및 Custom Field 추가
+
     ```python
     class User(AbstractBaseUser):
         objects = UserManager()
@@ -357,7 +357,7 @@
         is_active = models.BooleanField(default=True)
         is_teacher = models.BooleanField(default=False)
         is_admin = models.BooleanField(default=False)
-    
+
     class Meta:
         db_table = "user"
         verbose_name = "user"
@@ -365,12 +365,11 @@
     ```
 
   - JWT를 이용한 인증 방식 구현
-  - 회원가입, 회원 정보 조회, 회원 정보 수정,  회원 삭제 등 기본적인 User Model CRUD 제공
-  - 회원가입 시 60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 랜덤 닉네임 생성 ```열정적인 호랑이#1234```
+  - 회원가입, 회원 정보 조회, 회원 정보 수정, 회원 삭제 등 기본적인 User Model CRUD 제공
+  - 회원가입 시 60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 랜덤 닉네임 생성 `열정적인 호랑이#1234`
   - 백엔드에서 회원가입, 회원정보 수정 시 사용하는 serializer 중복 체크 외에도 프론트엔드에서 사용할 수 있는 중복체크 API 지원으로 DB에 중복 에러 발생하지 않도록 이중으로 설계
   - OAuth2.0 (Naver 소셜 로그인) 지원 및 소셜 로그인 시 닉네임, 핸드폰 번호, 닉네임 등을 User Model에 업데이트 및 저장
   - 회원가입 및 비밀번호 초기화 시 이메일 인증 단계를 추가해 보안 강화
-
 
 # 5. 기능(APP)별 라이브 데모
 
@@ -382,6 +381,7 @@
 |      User       |        <img width="1470" alt="회원가입예외" src="https://github.com/DevelOrm/DeveLearn/assets/89283288/0c4b92f3-3e56-4278-8fb0-a53f323ab997">        | 회원가입 예외 |
 | drf-spectacular |                  ![swagger](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/d25104ca-50ce-4f28-a7e4-c7d35d329ca2)                   |  SWAGGER-UI   |
 | drf-spectacular |                   ![redoc](https://github.com/FutureMaker0/DRF_webex_final/assets/120623320/ec15c63b-b9f4-4d02-93c0-7fdf6f0dc1d6)                    |   REDOC-UI    |
+|   에러 페이지   |                         ![error](https://github.com/DevelOrm/DeveLearn/assets/89283288/38368bbc-fa4c-46ff-8857-3c9f6f5069c5)                         |  404 페이지   |
 
 # 6. 개발 중 장애물 & 극복 방법
 
@@ -523,13 +523,3 @@
         </tr>
     </tbody>
 </table>
-
-# 8. 프로젝트 소감 (어려웠던 점 & 배운점 & 향후 계획)
-
-- 어려웠던 점 (trouble shooting)
-- 배운점
-- 향후 계획
-
-```
-
-```
