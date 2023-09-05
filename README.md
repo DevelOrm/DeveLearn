@@ -344,8 +344,7 @@
 
 - User
 
-  - Custom User Model
-
+  - ```AbstractBaseUser``` 상속 받아 불필요한 Field 제거 및 Custom Field 추가
     ```python
     class User(AbstractBaseUser):
         objects = UserManager()
@@ -358,32 +357,20 @@
         is_active = models.BooleanField(default=True)
         is_teacher = models.BooleanField(default=False)
         is_admin = models.BooleanField(default=False)
-
+    
     class Meta:
         db_table = "user"
         verbose_name = "user"
         verbose_name_plural = "users"
     ```
 
-  `AbstractUser`가 아닌 `AbstractBaseUser` 상속 받아 Custom User Model 사용하여 필요하지 않은 기본 field가 출력되지 않도록 했다.
+  - JWT를 이용한 인증 방식 구현
+  - 회원가입, 회원 정보 조회, 회원 정보 수정,  회원 삭제 등 기본적인 User Model CRUD 제공
+  - 회원가입 시 60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 랜덤 닉네임 생성 ```열정적인 호랑이#1234```
+  - 백엔드에서 회원가입, 회원정보 수정 시 사용하는 serializer 중복 체크 외에도 프론트엔드에서 사용할 수 있는 중복체크 API 지원으로 DB에 중복 에러 발생하지 않도록 이중으로 설계
+  - OAuth2.0 (Naver 소셜 로그인) 지원 및 소셜 로그인 시 닉네임, 핸드폰 번호, 닉네임 등을 User Model에 업데이트 및 저장
+  - 회원가입 및 비밀번호 초기화 시 이메일 인증 단계를 추가해 보안 강화
 
-  - 기본 유저 CRUD
-
-  회원가입, 회원 정보 조회, 회원 정보 수정, 회원 삭제 등 기본적인 User Model CRUD 기능을 구현하였다.
-
-  - 랜덤 닉네임
-
-  회원가입 시 닉네임 설정을 하지 않을 경우 랜덤 닉네임 생성하도록 구현하였다. 60개의 긍정 형용사, 동물 40개, #0001~9999 범위의 랜덤한 수를 조합해 닉네임 생성하여 같은 닉네임의 생성을 최대한 방지하였다. `예시: 열정적인 호랑이#1234`
-
-  - 회원가입 예외 처리
-
-  USER_ID, NICKNAME, EMAIL, PHONE_NUMBER를 입력했을 때 중복을 체크하는 기능을 구현하여 회원가입 시 추가적인 validate 검사 실행하였다.
-
-  - OAuth2.0 (Naver 소셜 로그인) 지원
-
-  - dj-rest-auth
-
-  dj-rest-auth 라이브러리(simple-JWT, all-auth) 사용해 비밀번호 초기화, 회원가입 시 이메일 인증 등의 기능을 구현하였다.
 
 # 5. 기능(APP)별 라이브 데모
 
@@ -452,8 +439,8 @@
             </td>
         </tr>
         <tr>
-            <td rowspan="3">
-                유저
+            <td align="center" rowspan="3">
+                User
             </td>
             <td>
                 <a>라이브러리 사용 시 직접 설계한 것이 아니라 공식문서를 읽고 코드를 이해하는데 어려움</a>
@@ -509,11 +496,11 @@
                 <a> - Python logging 모듈을 사용해 로그를 남기고 유저 패턴 및 악의적인 요청 분석</a> <br>
                 <a> - 핸드폰 번호 인증을 도입해 보안 강화</a> <br>
                 <a> - 프로필 사진 업로드 시 저장되는 이미지를 변환(메타 데이터 삭제 및 리사이징)해서 개인정보 보호 및 서버 리소스 소모 감소</a> <br>
-                <a>- CAPTCHA 등 봇 탐지 도입</a><br>
-                <a>- 비정상적 요청이 많은 유저는 자동으로 차단할 수 있는 기능 추가</a><br>
-                <a>- 1년 이상 미접속 사용자 휴면 계정 전환 기능 추가</a><br>
-                <a>- 핸드폰 번호 인증을 도입해 보안 강화</a><br>
-                <a>- 프로필 사진 업로드 시 저장되는 이미지를 변환(메타 데이터 삭제 및 리사이징)해서 개인정보 보호 및 서버 리소스 소모 감소</a><br>
+                <a> - CAPTCHA 등 봇 탐지 도입</a><br>
+                <a> - 비정상적 요청이 많은 유저는 자동으로 차단할 수 있는 기능 추가</a><br>
+                <a> - 1년 이상 미접속 사용자 휴면 계정 전환 기능 추가</a><br>
+                <a> - 핸드폰 번호 인증을 도입해 보안 강화</a><br>
+                <a> - 프로필 사진 업로드 시 저장되는 이미지를 변환(메타 데이터 삭제 및 리사이징)해서 개인정보 보호 및 서버 리소스 소모 감소</a><br>
             </td>
         </tr>
         <tr>
