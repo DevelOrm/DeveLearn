@@ -12,18 +12,15 @@ import re
 
 class UserRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(allow_null=True)
-    profile_image = serializers.ImageField(allow_null=True)
-    phone_number =  serializers.CharField(allow_null=True)
+    profile_image = serializers.ImageField(required=False, allow_null=True)
+    phone_number = serializers.CharField()
     is_teacher = serializers.BooleanField()
 
     def validate_phone_number(self, phone_number):
-        pattern = r'^01[0-9]{1}-[0-9]{4}-[0-9]{4}$'
+        pattern = r'^[0-9]{3}-[0-9]{4}-[0-9]{4}$'
 
         if not re.match(pattern, phone_number):
             raise serializers.ValidationError("올바른 핸드폰 번호를 입력해주세요.")
-
-        if phone_number == None:
-            raise serializers.ValidationError("핸드폰 번호를 입력해주세요.")
         if User.objects.filter(phone_number=phone_number).exists():
             raise serializers.ValidationError("이미 사용 중인 핸드폰 번호입니다.")
         return phone_number
@@ -86,27 +83,34 @@ class UserInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = ['user_id', 'nickname', 'email', 'phone_number', 'profile_image', 'last_login', 'joined_date', 'is_teacher']
 
-class DuplicationCheckSerializer(serializers.Serializer):
-    user_id = serializers.CharField(required=True)
-    nickname = serializers.CharField(required=True)
-    email = serializers.CharField(required=True)
-    phone_number = serializers.CharField(required=True)
+class UseridDuplicationCheckSerializer(serializers.Serializer):
+    user_id = serializers.CharField(required=False)
 
     def validate_user_id(self, input_user_id):
         if User.objects.filter(user_id=input_user_id).exists():
             raise serializers.ValidationError("이미 사용 중인 아이디입니다.")
         return input_user_id
     
+class NicknameDuplicationCheckSerializer(serializers.Serializer):
+    nickname = serializers.CharField(required=True)
+
     def validate_nickname(self, input_nickname):
         if User.objects.filter(nickname=input_nickname).exists():
             raise serializers.ValidationError("이미 사용 중인 닉네임입니다.")
         return input_nickname
-    
+
+class EmailDuplicationCheckSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+
     def validate_email(self, input_email):
         if User.objects.filter(email=input_email).exists():
             raise serializers.ValidationError("이미 사용 중인 이메일입니다.")
         return input_email
-    
+
+
+class PhonenumberDuplicationCheckSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(required=True)
+
     def validate_phone_number(self, input_phone_number):
         if User.objects.filter(phone_number=input_phone_number).exists():
             raise serializers.ValidationError("이미 사용 중인 핸드폰 번호입니다.")
