@@ -142,11 +142,18 @@
             </td>
         </tr>
         <tr>
-            <td align="center">유저, 인증 관련 개발</td>
-            <td align="center">뉴스 CRUD 구현</td>
-            <td align="center">게시판 CRUD 구현</td>
-            <td align="center">코드 리팩토링, drf-spectacular</td>
-            <td align="center">s3 버킷 파일 업로드, Nginx 배포</td>
+            <td align="center">유저</td>
+            <td align="center">뉴스</td>
+            <td align="center">클래스룸</td>
+            <td align="center">API 문서화</td>
+            <td align="center">배포</td>
+        </tr>
+        <tr>
+            <td align="center">유저</td>
+            <td align="center">뉴스</td>
+            <td align="center">클래스룸</td>
+            <td align="center">API 문서화</td>
+            <td align="center">배포</td>
         </tr>
     </tbody>
 </table>
@@ -339,6 +346,25 @@
 
   - Custom User Model
 
+    ```python
+    class User(AbstractBaseUser):
+        objects = UserManager()
+        user_id = models.CharField(max_length=20, unique=True)
+        nickname = models.CharField(max_length=20, unique=True)
+        email = models.EmailField(max_length=128, unique=True)
+        phone_number = models.CharField(max_length=14, unique=True)
+        profile_image = models.ImageField(blank=True, null=True)
+        joined_date = models.DateTimeField(auto_now_add=True)
+        is_active = models.BooleanField(default=True)
+        is_teacher = models.BooleanField(default=False)
+        is_admin = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "user"
+        verbose_name = "user"
+        verbose_name_plural = "users"
+    ```
+
   `AbstractUser`가 아닌 `AbstractBaseUser` 상속 받아 Custom User Model 사용하여 필요하지 않은 기본 field가 출력되지 않도록 했다.
 
   - 기본 유저 CRUD
@@ -425,6 +451,25 @@
                 <a>- @extend_schema / @extend_schema_view / @extned_schema_serializer 등이 있고 동시 적용 시 우선순위가 존재</a>
             </td>
         </tr>
+        <tr>
+            <td rowspan="3">
+                유저
+            </td>
+            <td>
+                <a>라이브러리 사용 시 직접 설계한 것이 아니라 공식문서를 읽고 코드를 이해하는데 어려움</a>
+            </td>
+            <td>
+                <a>직접 코드를 분석해보고 어떻게 동작하는지 확인하면서 이해하는 과정을 거침</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a>비정상적 API 요청에 대해 대비해야 할 경우의 수가 많다.</a>
+            </td>
+            <td>
+                <a>직접 어떤 취약점이 있을까 직접 공략을 해보고 대비할 코드를 만들었다.</a>
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -464,6 +509,11 @@
                 <a> - Python logging 모듈을 사용해 로그를 남기고 유저 패턴 및 악의적인 요청 분석</a> <br>
                 <a> - 핸드폰 번호 인증을 도입해 보안 강화</a> <br>
                 <a> - 프로필 사진 업로드 시 저장되는 이미지를 변환(메타 데이터 삭제 및 리사이징)해서 개인정보 보호 및 서버 리소스 소모 감소</a> <br>
+                <a>- CAPTCHA 등 봇 탐지 도입</a><br>
+                <a>- 비정상적 요청이 많은 유저는 자동으로 차단할 수 있는 기능 추가</a><br>
+                <a>- 1년 이상 미접속 사용자 휴면 계정 전환 기능 추가</a><br>
+                <a>- 핸드폰 번호 인증을 도입해 보안 강화</a><br>
+                <a>- 프로필 사진 업로드 시 저장되는 이미지를 변환(메타 데이터 삭제 및 리사이징)해서 개인정보 보호 및 서버 리소스 소모 감소</a><br>
             </td>
         </tr>
         <tr>
@@ -492,3 +542,7 @@
 - 어려웠던 점 (trouble shooting)
 - 배운점
 - 향후 계획
+
+```
+
+```
